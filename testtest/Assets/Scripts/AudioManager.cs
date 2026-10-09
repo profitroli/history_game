@@ -49,7 +49,7 @@ public class AudioManager : MonoBehaviour
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.clip = backgroundMusic;
         musicSource.loop = true;
-        musicSource.playOnAwake = false; // НЕ играть сразу!
+        musicSource.playOnAwake = false;
 
         // Загружаем сохраненную громкость
         musicVolume = PlayerPrefs.GetFloat(VOLUME_KEY, 0.7f);
@@ -58,21 +58,57 @@ public class AudioManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Проверяем, загрузилось ли главное меню
-        if (scene.name == mainMenuSceneName && !musicStarted)
-        {
-            StartBackgroundMusic();
-        }
+        // Проверяем, нужно ли включать/выключать музыку при загрузке любой сцены
+        UpdateMusicForCurrentScene();
     }
 
     void CheckCurrentScene()
     {
         // Проверяем текущую сцену при старте
+        UpdateMusicForCurrentScene();
+    }
+
+    void UpdateMusicForCurrentScene()
+    {
         string currentScene = SceneManager.GetActiveScene().name;
-        if (currentScene == mainMenuSceneName && !musicStarted)
+
+        // Проверяем, является ли текущая сцена лекцией (сами видео-лекции)
+        bool isLectureVideoScene = IsLectureVideoScene(currentScene);
+
+        if (isLectureVideoScene)
         {
-            StartBackgroundMusic();
+            // Если это видео-лекция - останавливаем музыку
+            StopBackgroundMusic();
         }
+        else
+        {
+            // Если это не видео-лекция - запускаем музыку
+            if (!musicStarted)
+            {
+                StartBackgroundMusic();
+            }
+            else if (musicStarted && !musicSource.isPlaying)
+            {
+                StartBackgroundMusic();
+            }
+        }
+    }
+
+    bool IsLectureVideoScene(string sceneName)
+    {
+        // Список сцен, которые являются видео-лекциями (без музыки)
+        // Lecture 1-14 (включая Lecture 11-12)
+        for (int i = 1; i <= 14; i++)
+        {
+            if (sceneName == $"Lecture {i}")
+                return true;
+        }
+
+        // Специальный случай для Lecture 11-12
+        if (sceneName == "Lecture 11-12")
+            return true;
+
+        return false;
     }
 
     void StartBackgroundMusic()
@@ -81,6 +117,16 @@ public class AudioManager : MonoBehaviour
         {
             musicSource.Play();
             musicStarted = true;
+            Debug.Log("Фоновая музыка включена");
+        }
+    }
+
+    void StopBackgroundMusic()
+    {
+        if (musicSource.isPlaying)
+        {
+            musicSource.Stop();
+            Debug.Log("Фоновая музыка выключена (видео-лекция)");
         }
     }
 
