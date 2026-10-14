@@ -5,25 +5,25 @@ using System.Collections;
 
 public class PreparationController : MonoBehaviour
 {
-    [Header("ЭЛЕМЕНТЫ")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private Button backButton;
     [SerializeField] private Button lecturesButton;
-    [SerializeField] private Button contentPage1Button; // Кнопка 1
-    [SerializeField] private Button contentPage2Button; // Кнопка 2
-    [SerializeField] private Button contentPage3Button; // Кнопка 3
+    [SerializeField] private Button contentPage1Button; // пїЅпїЅпїЅпїЅпїЅпїЅ 1
+    [SerializeField] private Button contentPage2Button; // пїЅпїЅпїЅпїЅпїЅпїЅ 2
+    [SerializeField] private Button contentPage3Button; // пїЅпїЅпїЅпїЅпїЅпїЅ 3
     [SerializeField] private CanvasGroup contentGroup;
 
-    [Header("НАСТРОЙКИ СЦЕН")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ")]
     [SerializeField] private string mainMenuScene = "MainMenu";
     [SerializeField] private string lecturesScene = "LecturesScene";
-    [SerializeField] private string contentPage1Scene = "ContentPage1"; // Сцена 1
-    [SerializeField] private string contentPage2Scene = "ContentPage2"; // Сцена 2
-    [SerializeField] private string contentPage3Scene = "ContentPage3"; // Сцена 3
+    [SerializeField] private string contentPage1Scene = "ContentPage1"; // пїЅпїЅпїЅпїЅпїЅ 1
+    [SerializeField] private string contentPage2Scene = "ContentPage2"; // пїЅпїЅпїЅпїЅпїЅ 2
+    [SerializeField] private string contentPage3Scene = "ContentPage3"; // пїЅпїЅпїЅпїЅпїЅ 3
     [SerializeField] private float fadeTime = 0.8f;
 
     void Start()
     {
-        // Назначаем обработчики кнопок
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (backButton != null)
         {
             backButton.onClick.AddListener(OnBackButtonClick);
@@ -35,38 +35,40 @@ public class PreparationController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Кнопка перехода к лекциям не назначена в инспекторе!");
+            Debug.LogWarning("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!");
         }
 
-        // Обработчики для кнопок страниц контента
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (contentPage1Button != null)
         {
-            contentPage1Button.onClick.AddListener(() => OnContentPageButtonClick(contentPage1Scene, "Страница 1"));
+            contentPage1Button.onClick.AddListener(() => OnContentPageButtonClick(contentPage1Scene, "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 1"));
         }
         else
         {
-            Debug.LogWarning("Кнопка ContentPage1 не назначена в инспекторе!");
+            Debug.LogWarning("пїЅпїЅпїЅпїЅпїЅпїЅ ContentPage1 пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!");
         }
 
         if (contentPage2Button != null)
         {
-            contentPage2Button.onClick.AddListener(() => OnContentPageButtonClick(contentPage2Scene, "Страница 2"));
+            contentPage2Button.onClick.AddListener(() => OnContentPageButtonClick(contentPage2Scene, "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 2"));
         }
         else
         {
-            Debug.LogWarning("Кнопка ContentPage2 не назначена в инспекторе!");
+            Debug.LogWarning("пїЅпїЅпїЅпїЅпїЅпїЅ ContentPage2 пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!");
         }
 
         if (contentPage3Button != null)
         {
-            contentPage3Button.onClick.AddListener(() => OnContentPageButtonClick(contentPage3Scene, "Страница 3"));
+            contentPage3Button.onClick.AddListener(() => OnContentPageButtonClick(contentPage3Scene, "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 3"));
         }
         else
         {
-            Debug.LogWarning("Кнопка ContentPage3 не назначена в инспекторе!");
+            Debug.LogWarning("пїЅпїЅпїЅпїЅпїЅпїЅ ContentPage3 пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!");
         }
 
-        // Эффект появления контента (только при входе в сцену)
+        ApplyRoleFilter();
+
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ)
         if (contentGroup != null)
         {
             contentGroup.alpha = 0;
@@ -74,21 +76,33 @@ public class PreparationController : MonoBehaviour
         }
     }
 
+    private void ApplyRoleFilter()
+    {
+        if (SessionManager.Instance == null || !SessionManager.Instance.IsLoggedIn) return;
+
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
+        var titleText = GetComponentInChildren<TMPro.TMP_Text>();
+        if (titleText != null && titleText.text.Contains("пїЅпїЅпїЅ"))
+        {
+            titleText.text = ContentFilter.GetPreparationLabel(SessionManager.Instance.Role);
+        }
+    }
+
     void OnBackButtonClick()
     {
-        Debug.Log("Возврат в главное меню");
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ");
         SceneManager.LoadScene(mainMenuScene);
     }
 
     void OnLecturesButtonClick()
     {
-        Debug.Log("Переход к лекциям");
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
         SceneManager.LoadScene(lecturesScene);
     }
 
     void OnContentPageButtonClick(string sceneName, string pageName)
     {
-        Debug.Log($"Переход на {pageName}");
+        Debug.Log($"пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ {pageName}");
         SceneManager.LoadScene(sceneName);
     }
 
@@ -107,7 +121,7 @@ public class PreparationController : MonoBehaviour
         contentGroup.alpha = 1;
     }
 
-    // Опционально: метод с плавным переходом
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private IEnumerator FadeOutAndLoadScene(string sceneName)
     {
         if (contentGroup != null)
