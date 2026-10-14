@@ -1,4 +1,4 @@
-using TMPro;
+п»їusing TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,8 +7,8 @@ public class FamilyTreeManager : MonoBehaviour
     [System.Serializable]
     public class Member
     {
-        public DraggableCard2 card; // Фото князя
-        public int correctSlotID;  // Куда его нужно поставить
+        public DraggableCard2 card; // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+        public int correctSlotID;  // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     }
 
     public Member[] familyMembers;
@@ -24,12 +24,13 @@ public class FamilyTreeManager : MonoBehaviour
 
         if (correct == familyMembers.Length)
         {
-            statusText.text = "Семья воссоединена! Верно.";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅ.";
             statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else
         {
-            statusText.text = "Кто-то не на своём месте...";
+            statusText.text = "пїЅпїЅпїЅ-пїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ...";
             statusText.color = Color.red;
         }
     }
@@ -40,7 +41,7 @@ public class FamilyTreeManager : MonoBehaviour
     public void ResetGame()
     {
         foreach (var m in familyMembers) m.card.ResetPosition();
-        statusText.text = "Расставьте правильно родственные связи ";
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ ";
         statusText.color = Color.black;
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,9 +9,9 @@ public class WordSelectionManager : MonoBehaviour
     [System.Serializable]
     public class WordElement
     {
-        public string itemName;      // Название (например, "Войско")
-        public Button wordButton;    // Кнопка в UI
-        public bool isCorrectTarget; // Должно ли это слово быть выбрано?
+        public string itemName;      // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, "пїЅпїЅпїЅпїЅпїЅпїЅ")
+        public Button wordButton;    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ UI
+        public bool isCorrectTarget; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ?
         [HideInInspector] public bool isSelected = false;
     }
 
@@ -26,13 +26,13 @@ public class WordSelectionManager : MonoBehaviour
             current.wordButton.onClick.AddListener(() => OnWordClicked(current));
             current.wordButton.image.color = Color.white;
         }
-        statusText.text = "Выберите то, что стало ОБЩИМ для ВКЛ и Польши:";
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ:";
     }
 
     void OnWordClicked(WordElement w)
     {
         w.isSelected = !w.isSelected;
-        // Подсветка при выборе (голубой цвет)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ)
         w.wordButton.image.color = w.isSelected ? new Color(0.6f, 0.8f, 1f) : Color.white;
     }
 
@@ -50,35 +50,36 @@ public class WordSelectionManager : MonoBehaviour
             {
                 if (w.isCorrectTarget)
                 {
-                    // Правильно выбранный элемент
+                    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                     w.wordButton.image.color = Color.green;
                     correctSelected++;
                 }
                 else
                 {
-                    // Ошибочно выбранный элемент
+                    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                     w.wordButton.image.color = Color.red;
                     hasErrors = true;
                 }
             }
             else
             {
-                // Если кнопка НЕ выбрана, возвращаем ей белый цвет (или серый)
+                // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ)
                 w.wordButton.image.color = Color.white;
 
-                // Если игрок ЗАБЫЛ выбрать нужную кнопку
+                // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 if (w.isCorrectTarget) hasErrors = true;
             }
         }
 
         if (!hasErrors && correctSelected == totalRequired)
         {
-            statusText.text = "Верно! Вы хорошо разобрались в теме.";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅ! пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ.";
             statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else
         {
-            statusText.text = "Есть ошибки или пропущенные элементы!";
+            statusText.text = "пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.red;
         }
     }
@@ -93,7 +94,7 @@ public class WordSelectionManager : MonoBehaviour
             w.isSelected = false;
             w.wordButton.image.color = Color.white;
         }
-        statusText.text = "Выберите то, что стало ОБЩИМ для ВКЛ и Польши";
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ";
         statusText.color = Color.black;
     }
 }

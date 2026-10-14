@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,7 +16,7 @@ public class CrosswordManager : MonoBehaviour
     public List<WordLine> words;
     public TextMeshProUGUI resultText;
 
-    // Кнопка ПРОВЕРИТЬ
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public void CheckCrossword()
     {
         int correctWordsCount = 0;
@@ -32,20 +32,21 @@ public class CrosswordManager : MonoBehaviour
             if (playerWord == line.correctWord.ToUpper())
             {
                 correctWordsCount++;
-                SetLineColor(line, new Color(0.6f, 1f, 0.6f)); // Светло-зеленый
+                SetLineColor(line, new Color(0.6f, 1f, 0.6f)); // пїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             }
             else
             {
-                SetLineColor(line, new Color(1f, 0.6f, 0.6f)); // Светло-красный
+                SetLineColor(line, new Color(1f, 0.6f, 0.6f)); // пїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             }
         }
 
         if (correctWordsCount == words.Count) {
-            resultText.text = "Победа! Все слова верны.";
+            resultText.text = "пїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.";
             resultText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else {
-            resultText.text = $"Верно слов: {correctWordsCount} из {words.Count}";
+            resultText.text = $"пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ: {correctWordsCount} пїЅпїЅ {words.Count}";
             resultText.color = Color.red;
         }
     }
@@ -61,7 +62,7 @@ public class CrosswordManager : MonoBehaviour
                 cell.image.color = Color.white;
             }
         }
-        resultText.text = "Разгадайте кроссворд, вопросы в указателях";
+        resultText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
         resultText.color = Color.black;
     }
     public void LoadLevelByName(string sceneName)

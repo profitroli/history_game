@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,8 +8,8 @@ public class TimelineManager : MonoBehaviour
     [System.Serializable]
     public class TimelineEvent
     {
-        public DraggableCard cardScript; // Тянем сюда саму карточку
-        public int correctSlotID;       // Правильный ID слота (0, 1, 2...)
+        public DraggableCard cardScript; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        public int correctSlotID;       // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ID пїЅпїЅпїЅпїЅпїЅ (0, 1, 2...)
     }
 
     public List<TimelineEvent> events;
@@ -29,12 +29,13 @@ public class TimelineManager : MonoBehaviour
 
         if (correctCount == events.Count)
         {
-            statusText.text = "Верно! Хронология соблюдена.";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.";
             statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else
         {
-            statusText.text = "Ошибки в порядке! Попробуйте еще раз.";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ.";
             statusText.color = Color.red;
         }
     }
@@ -44,7 +45,7 @@ public class TimelineManager : MonoBehaviour
     }
     public void ResetGame()
     {
-        if (statusText != null) statusText.text = "Расставьте события в хронологическом порядке";
+        if (statusText != null) statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
         statusText.color= Color.black;
 
         foreach (var ev in events)

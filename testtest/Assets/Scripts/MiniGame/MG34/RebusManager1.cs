@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,21 +9,21 @@ public class RebusManager1 : MonoBehaviour
     [System.Serializable]
     public class RebusQuestion
     {
-        public string rebusName;      // Просто для порядка в инспекторе
-        public TMP_InputField inputField; // Поле ввода для этого ребуса
-        public Image resultImage;     // Картинка-ответ, которая появится (если нужно)
+        public string rebusName;      // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        public TMP_InputField inputField; // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        public Image resultImage;     // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ)
         public Image backImage;
         public Image backImage2;
         public Image backImage3;
-        public string correctText;    // Правильный ответ
+        public string correctText;    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     }
 
-    public List<RebusQuestion> questions; // Список всех 3 ребусов
-    public TextMeshProUGUI statusText;    // Общий текст результата
+    public List<RebusQuestion> questions; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ 3 пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public TextMeshProUGUI statusText;    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
     void Start()
     {
-        // При старте скрываем картинки-ответы, если они назначены
+        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         foreach (var q in questions)
         {
             if (q.resultImage != null) q.resultImage.gameObject.SetActive(false);
@@ -36,30 +36,31 @@ public class RebusManager1 : MonoBehaviour
 
         foreach (var q in questions)
         {
-            // 1. Убираем пробелы по краям, делаем маленькими буквами
-            // 2. .Replace(" ", "") — УДАЛЯЕТ ВСЕ ПРОБЕЛЫ ВНУТРИ (чтобы "два слова" стали как одно)
+            // 1. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+            // 2. .Replace(" ", "") пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ" пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ)
             string userText = q.inputField.text.Trim().ToLower().Replace(" ", "");
             string targetText = q.correctText.Trim().ToLower().Replace(" ", "");
 
-            // Проверяем, что поле не пустое и тексты совпали без учета пробелов
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             if (userText == targetText && targetText != "")
             {
                 correctCount++;
-                q.inputField.image.color = Color.green; // Зеленый — верно
+                q.inputField.image.color = Color.green; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
                 if (q.resultImage != null) { q.resultImage.gameObject.SetActive(true); q.backImage.gameObject.SetActive(false); q.backImage2.gameObject.SetActive(false); q.backImage3.gameObject.SetActive(false); }
             }
             else
             {
-                q.inputField.image.color = Color.red; // Красный — ошибка
+                q.inputField.image.color = Color.red; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             }
         }
 
         if (correctCount == questions.Count) { 
-            statusText.text="Все ребусы разгаданы!";
+            statusText.text="пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else { 
-            statusText.text= $"Верно: {correctCount} из {questions.Count}";
+            statusText.text= $"пїЅпїЅпїЅпїЅпїЅ: {correctCount} пїЅпїЅ {questions.Count}";
             statusText.color = Color.red;
         }
     }
@@ -75,7 +76,7 @@ public class RebusManager1 : MonoBehaviour
             q.inputField.image.color = Color.white;
             if (q.resultImage != null) { q.resultImage.gameObject.SetActive(false); q.backImage.gameObject.SetActive(true); q.backImage2.gameObject.SetActive(true); q.backImage3.gameObject.SetActive(true); }
             }
-        statusText.text = "Разгадайте ребусы по истории ВКЛ";
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ";
         statusText.color = Color.black;
     }
 }

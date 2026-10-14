@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,7 +19,7 @@ public class SourceGameManager : MonoBehaviour
 
     void Start()
     {
-        // Запоминаем текст, который ты написала в Unity перед запуском
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Unity пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (statusText != null)
         {
             originalStatusText = statusText.text;
@@ -32,7 +32,7 @@ public class SourceGameManager : MonoBehaviour
 
         foreach (var item in sources)
         {
-            // Используем Trim(), чтобы убрать невидимые пробелы, которые мешают проверке
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Trim(), пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             string currentText = item.inputField.text.Trim();
 
             if (!string.IsNullOrEmpty(currentText))
@@ -43,18 +43,18 @@ public class SourceGameManager : MonoBehaviour
 
         if (filledCount == 0)
         {
-            statusText.text = "Вы ничего не написали!";
+            statusText.text = "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
             return;
         }
 
         if (filledCount < sources.Length)
         {
-            statusText.text = "Подпишите все картинки!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.purple;
-            return; // Прекращаем проверку
+            return; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         }
 
-        // 3. Если все поля заполнены, проверяем правильность
+        // 3. пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         foreach (var item in sources)
         {
             if (item.inputField.text.Trim().ToLower() == item.correctAnswer.ToLower())
@@ -70,12 +70,13 @@ public class SourceGameManager : MonoBehaviour
 
         if (correct == sources.Length)
         {
-            statusText.text = "Все верно! Вы отличный историк!";
+            statusText.text = "пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ! пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else
         {
-            statusText.text = "Есть ошибки. Проверьте красные поля.";
+            statusText.text = "пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ.";
             statusText.color = Color.red;
         }
     }

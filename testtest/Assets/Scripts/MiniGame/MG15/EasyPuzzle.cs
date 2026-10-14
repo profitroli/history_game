@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,9 +9,9 @@ public class EasyPuzzle : MonoBehaviour
     [System.Serializable]
     public class PuzzleSlot
     {
-        public Image slotImage;           // Объект картинки в сетке
-        public List<Sprite> allVariants;  // Список всех 4-х кусочков
-        public int correctIndex;          // Номер правильного кусочка (0, 1, 2 или 3)
+        public Image slotImage;           // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
+        public List<Sprite> allVariants;  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ 4-пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        public int correctIndex;          // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (0, 1, 2 пїЅпїЅпїЅ 3)
         [HideInInspector] public int currentIndex = 0;
     }
 
@@ -20,11 +20,11 @@ public class EasyPuzzle : MonoBehaviour
     public TextMeshProUGUI resultText;
     public string correctWord ;
 
-    // Вызывается при клике на саму картинку в сетке
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
     public void ChangeImage(int slotIndex)
     {
         PuzzleSlot s = slots[slotIndex];
-        s.currentIndex = (s.currentIndex + 1) % s.allVariants.Count; // Листаем по кругу
+        s.currentIndex = (s.currentIndex + 1) % s.allVariants.Count; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         s.slotImage.sprite = s.allVariants[s.currentIndex];
     }
     public void LoadLevelByName(string sceneName)
@@ -39,29 +39,30 @@ public class EasyPuzzle : MonoBehaviour
             if (s.currentIndex == s.correctIndex) correctCount++;
         }
 
-        // 1. Очистка текста от невидимых символов TMP (заменяем \u200B на пустоту)
+        // 1. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ TMP (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ \u200B пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
         string cleanUserText = finalWordInput.text.Replace("\u200B", "").Trim().ToLower();
         string cleanCorrectWord = correctWord.Trim().ToLower();
 
         bool wordOk = cleanUserText == cleanCorrectWord;
 
-        // 2. Лог в консоль (поможет понять, в чем ошибка при тесте)
-        Debug.Log($"Собрано кусков: {correctCount}/{slots.Count}. Слово верно: {wordOk}");
+        // 2. пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ)
+        Debug.Log($"пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: {correctCount}/{slots.Count}. пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: {wordOk}");
 
         if (correctCount == slots.Count && wordOk)
         {
-            resultText.text = "Молодец! Всё правильно";
+            resultText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
             resultText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else
         {
-            // Уточняем для себя, где ошибка (можно убрать потом)
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ)
             if (correctCount != slots.Count && !wordOk)
-                resultText.text = "Ошибка в пазле и в слове";
+                resultText.text = "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ";
             else if (correctCount != slots.Count)
-                resultText.text = "Картинка собрана неверно";
+                resultText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
             else
-                resultText.text = "Слово введено неверно";
+                resultText.text = "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
 
             resultText.color = Color.red;
         }
@@ -71,11 +72,11 @@ public class EasyPuzzle : MonoBehaviour
     {
         foreach (var s in slots)
         {
-            s.currentIndex = Random.Range(0, s.allVariants.Count); // Перемешиваем
+            s.currentIndex = Random.Range(0, s.allVariants.Count); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             s.slotImage.sprite = s.allVariants[s.currentIndex];
         }
         finalWordInput.text = "";
-        resultText.text = "Соберите пазл и разгадайте его";
+        resultText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ";
         resultText.color = Color.black;
     }
 }

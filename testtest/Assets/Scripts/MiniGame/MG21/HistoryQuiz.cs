@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,15 +8,15 @@ public class HistoryQuiz : MonoBehaviour
     [System.Serializable]
     public class HistoryItem
     {
-        public string question;     // Текст события
-        public bool isIndependence; // Правильный ответ: true - Независимость, false - Перестройка
+        public string question;     // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        public bool isIndependence; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: true - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, false - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     }
 
-    public List<HistoryItem> questions; // Список всех событий
-    public TextMeshProUGUI eventDisplay; // Ссылка на текст на карточке
-    public TextMeshProUGUI resultDisplay; // Ссылка на статус (Верно/Ошибка)
-    public GameObject finishPanel;       // Окно финиша (панель)
-    public TextMeshProUGUI resultText;   // Итоговый текст на панели
+    public List<HistoryItem> questions; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public TextMeshProUGUI eventDisplay; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public TextMeshProUGUI resultDisplay; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅпїЅ)
+    public GameObject finishPanel;       // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ)
+    public TextMeshProUGUI resultText;   // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
     public float speed = 250f;
     private int currentIndex = 0;
@@ -27,30 +27,32 @@ public class HistoryQuiz : MonoBehaviour
     }
     void FinishGame()
     {
+        ProgressService.Instance?.ReportGameCompleted(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
 
         if (finishPanel != null)
         {
-            finishPanel.SetActive(true); // Включаем окно финиша
-            resultText.text = $"ФИНИШ! Хороший результат, продолжай изучать!";
+            finishPanel.SetActive(true); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+            resultText.text = $"пїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
         }
 
     }
-    // Эту функцию вызываем при нажатии кнопок
+    // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     public void SelectAnswer(bool userChoice)
     {
         if (currentIndex >= questions.Count) return;
 
-        // Проверяем: совпал ли выбор игрока с правдой в списке
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (userChoice == questions[currentIndex].isIndependence)
         {
-            resultDisplay.text = "ВЕРНО!";
+            resultDisplay.text = "пїЅпїЅпїЅпїЅпїЅ!";
             resultDisplay.color = Color.forestGreen;
             currentIndex++;
-            Invoke("ShowNextQuestion", 0.5f); // Показать следующий вопрос через полсекунды
+            Invoke("ShowNextQuestion", 0.5f); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         }
         else
         {
-            resultDisplay.text = "ОШИБКА! Попробуй еще раз.";
+            resultDisplay.text = "пїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ.";
             resultDisplay.color = Color.red;
         }
     }
@@ -63,7 +65,7 @@ public class HistoryQuiz : MonoBehaviour
         if (currentIndex < questions.Count)
         {
             eventDisplay.text = questions[currentIndex].question;
-            resultDisplay.text = "К какому периоду это относится?";
+            resultDisplay.text = "пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?";
             resultDisplay.color = Color.black;
         }
         else

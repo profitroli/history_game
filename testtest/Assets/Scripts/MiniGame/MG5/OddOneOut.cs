@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,18 +9,18 @@ public class OddOneOutManager : MonoBehaviour
     [System.Serializable]
     public class QuizGroup
     {
-        public string groupName;       // Название группы (для инспектора)
-        public Button[] buttons;       // 4 кнопки этой группы
-        public int correctOddIndex;    // Индекс лишнего слова (0, 1, 2 или 3)
-        [HideInInspector] public int selectedIndex = -1; // Что выбрал игрок
+        public string groupName;       // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
+        public Button[] buttons;       // 4 пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        public int correctOddIndex;    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (0, 1, 2 пїЅпїЅпїЅ 3)
+        [HideInInspector] public int selectedIndex = -1; // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     }
 
-    public List<QuizGroup> quizGroups; // Список всех групп вопросов
+    public List<QuizGroup> quizGroups; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public TextMeshProUGUI statusText;
 
     void Start()
     {
-        // Настраиваем кнопки при старте
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         for (int g = 0; g < quizGroups.Count; g++)
         {
             int groupIdx = g;
@@ -32,16 +32,16 @@ public class OddOneOutManager : MonoBehaviour
         }
     }
 
-    // Логика выбора кнопки
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     public void SelectButton(int groupIdx, int btnIdx)
     {
-        // Сбрасываем цвет всех кнопок в группе
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         foreach (Button btn in quizGroups[groupIdx].buttons)
         {
             btn.image.color = Color.white;
         }
 
-        // Подсвечиваем выбранную кнопку синим (или любым другим цветом выбора)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)
         quizGroups[groupIdx].buttons[btnIdx].image.color = new Color(0.7f, 0.8f, 1f);
         quizGroups[groupIdx].selectedIndex = btnIdx;
     }
@@ -51,7 +51,7 @@ public class OddOneOutManager : MonoBehaviour
         int correctCount = 0;
         bool allSelected = true;
 
-        // Проверяем, во всех ли группах сделан выбор
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         foreach (var group in quizGroups)
         {
             if (group.selectedIndex == -1) allSelected = false;
@@ -59,12 +59,12 @@ public class OddOneOutManager : MonoBehaviour
 
         if (!allSelected)
         {
-            statusText.text = "Выберите лишнее слово в каждой группе!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.purple;
             return;
         }
 
-        // Сверяем результаты
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         foreach (var group in quizGroups)
         {
             if (group.selectedIndex == group.correctOddIndex)
@@ -80,12 +80,13 @@ public class OddOneOutManager : MonoBehaviour
 
         if (correctCount == quizGroups.Count)
         {
-            statusText.text = "Верно! Вы нашли всех лишних!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅ! пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else
         {
-            statusText.text = "Есть ошибки, попробуйте еще раз";
+            statusText.text = "пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ";
             statusText.color = Color.red;
         }
     }
@@ -103,7 +104,7 @@ public class OddOneOutManager : MonoBehaviour
                 btn.image.color = Color.white;
             }
         }
-        statusText.text = "Выберите не подходящее в каждой грппе";
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ";
         statusText.color = Color.black;
     }
 }

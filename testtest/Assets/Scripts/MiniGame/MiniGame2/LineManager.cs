@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
@@ -6,14 +6,14 @@ using UnityEngine.SceneManagement;
 
 public class LineManager : MonoBehaviour
 {
-    [Header("Настройки UI")]
-    public GameObject linePrefab;      // Префаб Image (Pivot 0, 0.5)
-    public RectTransform canvasRect;  // Ссылка на сам Canvas
-    public TextMeshProUGUI statusText; // Текст для вывода сообщений
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ UI")]
+    public GameObject linePrefab;      // пїЅпїЅпїЅпїЅпїЅпїЅ Image (Pivot 0, 0.5)
+    public RectTransform canvasRect;  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ Canvas
+    public TextMeshProUGUI statusText; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
-    [Header("Настройки Игры")]
-    public int totalConnectionsNeeded = 7; // Сколько пар нужно соединить (у нас 7)
-    public string mainMenuSceneName = "MainMenu"; // Название главной сцены
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ")]
+    public int totalConnectionsNeeded = 7; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅ пїЅпїЅпїЅ 7)
+    public string mainMenuSceneName = "MainMenu"; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
     private GameObject currentLine;
     private ConnectionDot startDot;
@@ -21,31 +21,31 @@ public class LineManager : MonoBehaviour
 
     void Start()
     {
-        // Запоминаем текст, который ты написала в Unity перед запуском
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Unity пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (statusText != null)
         {
             originalStatusText = statusText.text;
         }
     }
-    // Списки для хранения данных о созданных соединениях
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private List<GameObject> activeLines = new List<GameObject>();
     private List<KeyValuePair<ConnectionDot, ConnectionDot>> connections = new List<KeyValuePair<ConnectionDot, ConnectionDot>>();
 
     /// <summary>
-    /// Начинает рисование линии от точки
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public void StartDrawing(ConnectionDot dot)
     {
         startDot = dot;
 
-        // Создаем линию как ребенка Canvas
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ Canvas
         currentLine = Instantiate(linePrefab, canvasRect);
 
-        // Перемещаем линию в самый верх иерархии внутри Canvas, 
-        // чтобы она была визуально ПОД точками
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Canvas, 
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         currentLine.transform.SetAsLastSibling();
 
-        // ВАЖНО: Отключаем Raycast у линии, чтобы она не перекрывала вторую точку
+        // пїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Raycast пїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (currentLine.TryGetComponent<Image>(out Image img))
         {
             img.raycastTarget = false;
@@ -54,7 +54,7 @@ public class LineManager : MonoBehaviour
 
     void Update()
     {
-        // Если мы сейчас тянем линию, обновляем её положение за мышкой
+        // пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (currentLine != null)
         {
             UpdateLine(Input.mousePosition);
@@ -62,14 +62,14 @@ public class LineManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Завершает рисование линии
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public void EndDrawing(ConnectionDot endDot)
     {
-        // Проверяем: отпустили ли над точкой, не та же ли это точка и с другой ли она стороны
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (endDot != null && endDot != startDot && endDot.isLeft != startDot.isLeft)
         {
-            // Фиксируем линию в конечной точке
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             UpdateLine(endDot.transform.position);
 
             activeLines.Add(currentLine);
@@ -79,14 +79,14 @@ public class LineManager : MonoBehaviour
         }
         else
         {
-            // Если условия не соблюдены (отпустили в пустоту) — удаляем линию
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ) пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             if (currentLine != null) Destroy(currentLine);
             currentLine = null;
         }
     }
 
     /// <summary>
-    /// Математический расчет положения, длины и поворота линии
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     void UpdateLine(Vector3 targetWorldPos)
     {
@@ -94,29 +94,29 @@ public class LineManager : MonoBehaviour
 
         RectTransform rt = currentLine.GetComponent<RectTransform>();
 
-        // Конвертируем мировые координаты в локальные координаты Canvas
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Canvas
         Vector2 localStartPos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, startDot.transform.position, null, out localStartPos);
 
         Vector2 localTargetPos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, targetWorldPos, null, out localTargetPos);
 
-        // Ставим начало линии в стартовую точку
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         rt.anchoredPosition = localStartPos;
 
-        // Вычисляем вектор направления
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Vector2 direction = localTargetPos - localStartPos;
 
-        // Устанавливаем длину (ширину) линии
-        rt.sizeDelta = new Vector2(direction.magnitude, 5f); // 5f — толщина линии
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ) пїЅпїЅпїЅпїЅпїЅ
+        rt.sizeDelta = new Vector2(direction.magnitude, 5f); // 5f пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
-        // Устанавливаем угол поворота
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         rt.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     /// <summary>
-    /// Проверка результатов (для кнопки "Проверить")
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")
     /// </summary>
     public void CheckResults()
     {
@@ -124,14 +124,14 @@ public class LineManager : MonoBehaviour
 
         if (connections.Count == 0)
         {
-            statusText.text = "Сначала нарисуйте линии!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.black;
             return;
         }
 
         if (connections.Count < totalConnectionsNeeded)
         {
-            statusText.text = "Соедините все части!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.black;
             return;
         }
@@ -139,7 +139,7 @@ public class LineManager : MonoBehaviour
         int correctCount = 0;
         foreach (var pair in connections)
         {
-            // Сравниваем ID левой и правой точки
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ID пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             if (pair.Key.id == pair.Value.id)
             {
                 correctCount++;
@@ -148,22 +148,23 @@ public class LineManager : MonoBehaviour
 
         if (correctCount == totalConnectionsNeeded)
         {
-            statusText.text = "Молодец!!Всё правильно!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!!пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else
         {
-            statusText.text = "Неправильно, попробуй ещё раз";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ";
             statusText.color = Color.red;
         }
     }
 
     /// <summary>
-    /// Полный сброс игры (для кнопки "Сброс")
+    /// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅ")
     /// </summary>
     public void ResetGame()
     {
-        // Удаляем все объекты линий
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         foreach (GameObject line in activeLines)
         {
             if (line != null) Destroy(line);
@@ -176,7 +177,7 @@ public class LineManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Переход в меню (для кнопки "Назад")
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅ")
     /// </summary>
     public void LoadLevelByName(string sceneName)
     {

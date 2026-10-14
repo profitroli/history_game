@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -8,32 +8,32 @@ public class ParliamentConstructor : MonoBehaviour
     [System.Serializable]
     public class ConstructionSlot
     {
-        public TextMeshProUGUI slotText; // Ссылка на текст в белом квадрате
-        public string[] options;         // Список вариантов (например: "110 депутатов", "64 члена")
-        public int correctAnswerIndex;   // Номер правильного ответа в списке
-        [HideInInspector] public int currentIndex = -1; // Что выбрал игрок
+        public TextMeshProUGUI slotText; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        public string[] options;         // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: "110 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "64 пїЅпїЅпїЅпїЅпїЅ")
+        public int correctAnswerIndex;   // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        [HideInInspector] public int currentIndex = -1; // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     }
 
     public ConstructionSlot[] slots;
     public TextMeshProUGUI statusText;
 
-    // Метод для кнопок-квадратов
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public void ClickSlot(int slotIndex)
     {
         ConstructionSlot slot = slots[slotIndex];
         slot.currentIndex = (slot.currentIndex + 1) % slot.options.Length;
         slot.slotText.text = slot.options[slot.currentIndex];
-        slot.slotText.color = Color.black; // Сбрасываем цвет при смене
+        slot.slotText.color = Color.black; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     }
 
     public void CheckResults()
-    {// 1. Сначала проверяем, все ли слоты заполнены
+    {// 1. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         for (int i = 0; i < slots.Length; i++)
         {
             if (slots[i].currentIndex == -1)
             {
-                statusText.text = "<color=black>Сначала выберите значения во всех пустых квадратах!</color>";
-                return; // Прерываем выполнение метода, проверка не начнется
+                statusText.text = "<color=black>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!</color>";
+                return; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             }
         }
         int correctCount = 0;
@@ -43,22 +43,23 @@ public class ParliamentConstructor : MonoBehaviour
             if (slots[i].currentIndex == slots[i].correctAnswerIndex)
             {
                 correctCount++;
-                slots[i].slotText.color = Color.green; // Подсвечиваем верный
+                slots[i].slotText.color = Color.green; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             }
             else
             {
-                slots[i].slotText.color = Color.red;   // Подсвечиваем ошибку
+                slots[i].slotText.color = Color.red;   // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             }
         }
 
         if (correctCount == slots.Length)
         {
-            statusText.text = "Правильно! Парламент сформирован верно.";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.";
             statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else
         {
-            statusText.text = $"Ошибки в схеме! Верно: {correctCount} из {slots.Length}";
+            statusText.text = $"пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅ: {correctCount} пїЅпїЅ {slots.Length}";
             statusText.color = Color.red;
         }
     }

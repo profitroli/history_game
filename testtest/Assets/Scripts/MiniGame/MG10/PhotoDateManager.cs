@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,10 +9,10 @@ public class MultiDateManager : MonoBehaviour
     [System.Serializable]
     public class DateEntry
     {
-        public string eventName;      // Название для инспектора (например, "Восстание Калиновского")
-        public TMP_InputField inputField; // Поле, куда игрок пишет год
-        public string correctYear;    // Правильный год (например, "1863")
-        public Image iconImage;       // Картинка события (чтобы менять её цвет при проверке)
+        public string eventName;      // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")
+        public TMP_InputField inputField; // пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
+        public string correctYear;    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, "1863")
+        public Image iconImage;       // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
     }
 
     public List<DateEntry> dateEntries;
@@ -24,31 +24,32 @@ public class MultiDateManager : MonoBehaviour
 
         foreach (var entry in dateEntries)
         {
-            // Очищаем ввод от лишних пробелов и букв (оставляем только цифры)
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ)
             string userYear = System.Text.RegularExpressions.Regex.Replace(entry.inputField.text, @"\D", "");
 
             if (userYear == entry.correctYear)
             {
                 correctCount++;
-                // Подсвечиваем поле зеленым
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 entry.inputField.image.color = Color.green;
             }
             else
             {
-                // Подсвечиваем поле красным
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 entry.inputField.image.color = Color.red;
             }
         }
 
-        // Общий результат внизу экрана
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (correctCount == dateEntries.Count)
         {
-            statusText.text = "Отлично! Все даты указаны верно.";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.";
             statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else
         {
-            statusText.text = $"Верно: {correctCount} из {dateEntries.Count}. Проверьте ошибки!";
+            statusText.text = $"пїЅпїЅпїЅпїЅпїЅ: {correctCount} пїЅпїЅ {dateEntries.Count}. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.red;
         }
     }
@@ -63,7 +64,7 @@ public class MultiDateManager : MonoBehaviour
             entry.inputField.text = "";
             entry.inputField.image.color = Color.white;
         }
-        statusText.text = "Введите даты событий";
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
         statusText.color = Color.black;
     }
 }

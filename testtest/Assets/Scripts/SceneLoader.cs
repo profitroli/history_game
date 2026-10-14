@@ -3,35 +3,37 @@ using UnityEngine.SceneManagement;
 
 public static class SceneLoader
 {
-    // Основные сцены приложения
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public const string MAIN_MENU = "MainMenu";
     public const string LECTURES_SCENE = "LecturesScene";
     public const string GAMES_SCENE = "GamesScene";
     public const string PREPARATION_SCENE = "PreparationScene";
     public const string SETTINGS_SCENE = "SettingsScene";
+    public const string LOGIN_SCENE = "LoginScene";
+    public const string TEACHER_DASHBOARD = "TeacherDashboardScene";
 
-    // Основной метод для загрузки сцен
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     public static void LoadScene(string sceneName)
     {
         if (string.IsNullOrEmpty(sceneName))
         {
-            Debug.LogError("Имя сцены не может быть пустым!");
+            Debug.LogError("пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!");
             return;
         }
 
-        // Проверяем существование сцены
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (!IsSceneInBuildSettings(sceneName))
         {
-            Debug.LogError($"Сцена '{sceneName}' не найдена в Build Settings!");
-            LoadMainMenu(); // Возвращаем в главное меню при ошибке
+            Debug.LogError($"пїЅпїЅпїЅпїЅпїЅ '{sceneName}' пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Build Settings!");
+            LoadMainMenu(); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             return;
         }
 
-        // Загружаем сцену
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         SceneManager.LoadScene(sceneName);
     }
 
-    // Методы для быстрой загрузки конкретных сцен
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     public static void LoadMainMenu()
     {
         LoadScene(MAIN_MENU);
@@ -57,14 +59,14 @@ public static class SceneLoader
         LoadScene(SETTINGS_SCENE);
     }
 
-    // Метод для проверки наличия сцены в Build Settings
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ Build Settings
     private static bool IsSceneInBuildSettings(string sceneName)
     {
         int sceneCount = SceneManager.sceneCountInBuildSettings;
 
         for (int i = 0; i < sceneCount; i++)
         {
-            // Получаем путь к сцене и извлекаем имя
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
             string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
             string nameFromPath = System.IO.Path.GetFileNameWithoutExtension(scenePath);
 
@@ -76,7 +78,7 @@ public static class SceneLoader
 
         return false;
     }
-    // Дополнительные полезные методы
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     public static string GetCurrentSceneName()
     {
         return SceneManager.GetActiveScene().name;
@@ -92,13 +94,13 @@ public static class SceneLoader
     {
         if (string.IsNullOrEmpty(sceneName))
         {
-            Debug.LogError("Имя сцены не может быть пустым!");
+            Debug.LogError("пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!");
             return;
         }
 
         if (!IsSceneInBuildSettings(sceneName))
         {
-            Debug.LogError($"Сцена '{sceneName}' не найдена в Build Settings!");
+            Debug.LogError($"пїЅпїЅпїЅпїЅпїЅ '{sceneName}' пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Build Settings!");
             return;
         }
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,8 +8,8 @@ public class TrueFalseManager : MonoBehaviour
     [System.Serializable]
     public class QuestionData
     {
-        public ToggleAnswer toggleBtn; // Ссылка на кнопку-переключатель
-        public bool isActuallyTrue;    // Правильный ответ из истории
+        public ToggleAnswer toggleBtn; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        public bool isActuallyTrue;    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     }
 
     public List<QuestionData> questions;
@@ -18,7 +18,7 @@ public class TrueFalseManager : MonoBehaviour
 
     void Start()
     {
-        // Запоминаем текст, который ты написала в Unity перед запуском
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Unity пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (statusText != null)
         {
             originalStatusText = statusText.text;
@@ -37,7 +37,7 @@ public class TrueFalseManager : MonoBehaviour
 
         if (!allAnswered)
         {
-            statusText.text = "Ответьте на все вопросы!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
             return;
         }
 
@@ -56,8 +56,9 @@ public class TrueFalseManager : MonoBehaviour
             }
         }
 
-        statusText.text = (correctCount == questions.Count) ? "Великолепно!" : $"Верно: {correctCount} из {questions.Count}";
+        statusText.text = (correctCount == questions.Count) ? "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!" : $"пїЅпїЅпїЅпїЅпїЅ: {correctCount} пїЅпїЅ {questions.Count}";
         statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
     }
     public void LoadLevelByName(string sceneName)
     {

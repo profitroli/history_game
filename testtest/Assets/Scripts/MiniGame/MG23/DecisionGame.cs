@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,11 +9,11 @@ public class DecisionGame : MonoBehaviour
     [System.Serializable]
     public class DecisionNode
     {
-        public string situation;   // Описание ситуации
-        public string optionA;     // Текст на кнопке А
-        public string optionB;     // Текст на кнопке Б
-        public bool isCorrectA;    // Какой вариант исторически верный
-        public string resultInfo;  // Историческая справка после выбора
+        public string situation;   // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        public string optionA;     // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ
+        public string optionB;     // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ
+        public bool isCorrectA;    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        public string resultInfo;  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     }
 
     public List<DecisionNode> nodes;
@@ -21,8 +21,8 @@ public class DecisionGame : MonoBehaviour
     public TextMeshProUGUI btnAText;
     public TextMeshProUGUI btnBText;
     public TextMeshProUGUI infoText;
-    public GameObject finishPanel;       // Окно финиша (панель)
-    public TextMeshProUGUI resultText;   // Итоговый текст на панели
+    public GameObject finishPanel;       // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ)
+    public TextMeshProUGUI resultText;   // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
     public float speed = 250f;
     private int currentStep = 0;
@@ -30,11 +30,13 @@ public class DecisionGame : MonoBehaviour
     void Start() => ShowNode();
     void FinishGame()
     {
-        
+        ProgressService.Instance?.ReportGameCompleted(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
+
         if (finishPanel != null)
         {
-            finishPanel.SetActive(true); // Включаем окно финиша
-            resultText.text = $"ФИНИШ! Хороший результат, продолжай изучать!";
+            finishPanel.SetActive(true); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+            resultText.text = $"пїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
         }
         
     }
@@ -46,14 +48,14 @@ public class DecisionGame : MonoBehaviour
 
         if (wasCorrect)
         {
-            infoText.text = "ПРАВИЛЬНО: " + nodes[currentStep].resultInfo;
+            infoText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + nodes[currentStep].resultInfo;
             infoText.color = Color.forestGreen;
             currentStep++;
-            Invoke("ShowNode", 9f); // Даем время прочитать справку
+            Invoke("ShowNode", 9f); // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         }
         else
         {
-            infoText.text = "ОШИБКА: Этот путь не соответствует истории РБ.";
+            infoText.text = "пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ.";
             infoText.color = Color.red;
         }
     }
@@ -68,7 +70,7 @@ public class DecisionGame : MonoBehaviour
             situationText.text = nodes[currentStep].situation;
             btnAText.text = nodes[currentStep].optionA;
             btnBText.text = nodes[currentStep].optionB;
-            infoText.text = "Сделайте выбор...";
+            infoText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ...";
             infoText.color = Color.black;
         }
         else

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,11 +9,11 @@ public class MemorialFinalManager : MonoBehaviour
     [System.Serializable]
     public class MemorialBlock
     {
-        public Image iconImage;           // Картинка на экране
-        public List<Sprite> allSprites;   // Список всех мемориалов (Брест, Хатынь и т.д.)
-        public int correctSpriteIndex;    // Индекс правильного фото в списке
-        public TMP_InputField nameInput;  // Поле ввода
-        public string correctName;        // Верный текст (например, "Хатынь")
+        public Image iconImage;           // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        public List<Sprite> allSprites;   // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅ.пїЅ.)
+        public int correctSpriteIndex;    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        public TMP_InputField nameInput;  // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+        public string correctName;        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, "пїЅпїЅпїЅпїЅпїЅпїЅ")
 
         [HideInInspector] public int currentIndex = 0;
     }
@@ -25,12 +25,12 @@ public class MemorialFinalManager : MonoBehaviour
 
     void Start()
     {
-        // Запоминаем исходный текст задания, как ты просила
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (statusText != null) originalMessage = statusText.text;
         ResetGame();
     }
 
-    // Метод для кнопок-картинок (меняет визуал, но не проверяет)
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
     public void ChangeMemorial(int blockIndex)
     {
         MemorialBlock b = blocks[blockIndex];
@@ -38,14 +38,14 @@ public class MemorialFinalManager : MonoBehaviour
         b.iconImage.sprite = b.allSprites[b.currentIndex];
     }
 
-    // ГЛАВНАЯ ПРОВЕРКА (на кнопке "Проверить")
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")
     public void CheckAll()
     {
         int score = 0;
 
         foreach (var b in blocks)
         {
-            // Чистим текст от невидимых символов TMP
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ TMP
             string userText = b.nameInput.text.Replace("\u200B", "").Trim().ToLower();
             string targetText = b.correctName.Trim().ToLower();
 
@@ -65,12 +65,13 @@ public class MemorialFinalManager : MonoBehaviour
 
         if (score == blocks.Count)
         {
-            statusText.text = "Молодец! Всё правильно";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
             statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else
         {
-            statusText.text = "ПЕРЕДЕЛАЙТЕ! Есть ошибки";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ";
             statusText.color = Color.red;
         }
     }

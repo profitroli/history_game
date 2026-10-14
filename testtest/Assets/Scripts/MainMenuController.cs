@@ -5,10 +5,10 @@ using System.Collections;
 
 public class MainMenuController : MonoBehaviour
 {
-    [Header("Настройки")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private float fadeTime = 2f;
 
-    [Header("Ссылки на элементы UI")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ UI")]
     [SerializeField] private Button lecturesButton;
     [SerializeField] private Button miniGamesButton;
     [SerializeField] private Button preparationButton;
@@ -16,13 +16,13 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Button settingsButton;
     [SerializeField] private CanvasGroup menuCanvasGroup;
 
-    [Header("Сцены для загрузки")]
+    [Header("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private string lecturesSceneName = "LecturesScene";
     [SerializeField] private string miniGamesSceneName = "GamesScene";
     [SerializeField] private string preparationSceneName = "PreparationScene";
     [SerializeField] private string settingsSceneName = "SettingsScene";
 
-    // Статические переменные для отслеживания состояния
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private static bool isFirstTime = true;
     private static bool shouldKeepBlackScreen = false;
 
@@ -32,17 +32,17 @@ public class MainMenuController : MonoBehaviour
 
         if (isFirstTime)
         {
-            // Первый раз - оставляем черный экран для анимации
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             isFirstTime = false;
             shouldKeepBlackScreen = true;
-            Debug.Log("Это первый запуск, оставляем черный экран для анимации");
+            Debug.Log("пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
         }
         else
         {
-            // Не первый раз - удаляем черный экран сразу
+            // пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             shouldKeepBlackScreen = false;
             DestroyAllBlackScreensImmediately();
-            Debug.Log("Не первый запуск, удаляем черный экран сразу");
+            Debug.Log("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
         }
     }
 
@@ -52,13 +52,13 @@ public class MainMenuController : MonoBehaviour
 
         if (shouldKeepBlackScreen)
         {
-            // Если нужно оставить черный экран для анимации
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             StartCoroutine(ShowMenuWithFade());
-            shouldKeepBlackScreen = false; // После анимации больше не нужно
+            shouldKeepBlackScreen = false; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         }
         else
         {
-            // Если черный экран уже удален или не нужен
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             ShowMenuInstantly();
         }
 
@@ -67,16 +67,16 @@ public class MainMenuController : MonoBehaviour
 
     IEnumerator ShowMenuWithFade()
     {
-        Debug.Log("Начинаем анимацию с черным экраном");
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
 
-        // Ищем черный экран
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         GameObject blackScreen = GameObject.Find("FadeImage");
         if (blackScreen == null)
         {
             blackScreen = GameObject.Find("BlackScreenCanvas");
         }
 
-        // Ищем черный Image
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Image
         Image blackScreenImage = null;
         if (blackScreen != null)
         {
@@ -87,7 +87,7 @@ public class MainMenuController : MonoBehaviour
             }
         }
 
-        // Скрываем меню в начале
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (menuCanvasGroup != null)
         {
             menuCanvasGroup.alpha = 0;
@@ -95,7 +95,7 @@ public class MainMenuController : MonoBehaviour
             menuCanvasGroup.blocksRaycasts = false;
         }
 
-        // Ждем небольшую паузу
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         yield return new WaitForSeconds(0.5f);
 
         float timer = 0f;
@@ -104,13 +104,13 @@ public class MainMenuController : MonoBehaviour
         {
             float progress = timer / fadeTime;
 
-            // Плавно убираем черный экран
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             if (blackScreenImage != null)
             {
                 blackScreenImage.color = new Color(0, 0, 0, 1 - progress);
             }
 
-            // Плавно показываем меню
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
             if (menuCanvasGroup != null)
             {
                 menuCanvasGroup.alpha = progress;
@@ -120,11 +120,11 @@ public class MainMenuController : MonoBehaviour
             yield return null;
         }
 
-        // Завершаем анимацию
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (blackScreen != null)
         {
             Destroy(blackScreen);
-            Debug.Log("Черный экран удален после анимации");
+            Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
         }
 
         if (menuCanvasGroup != null)
@@ -134,12 +134,12 @@ public class MainMenuController : MonoBehaviour
             menuCanvasGroup.blocksRaycasts = true;
         }
 
-        Debug.Log("Анимация завершена, меню показано");
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
     }
 
     private void DestroyAllBlackScreensImmediately()
     {
-        // Удаляем все возможные черные экраны
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         GameObject[] blackScreenNames = {
             GameObject.Find("FadeImage"),
             GameObject.Find("BlackScreenCanvas"),
@@ -151,35 +151,53 @@ public class MainMenuController : MonoBehaviour
             if (obj != null)
             {
                 Destroy(obj);
-                Debug.Log("Удален черный экран: " + obj.name);
+                Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: " + obj.name);
             }
         }
 
-        // Ищем все черные изображения
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Image[] allImages = FindObjectsOfType<Image>(true);
         foreach (Image img in allImages)
         {
             if (img.color == Color.black && img.gameObject.name.Contains("Black"))
             {
                 Destroy(img.gameObject);
-                Debug.Log("Удалено черное изображение: " + img.name);
+                Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + img.name);
             }
         }
     }
 
     private void InitializeButtons()
     {
-        // Назначаем обработчики для кнопок
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         lecturesButton?.onClick.AddListener(LoadLecturesScene);
         miniGamesButton?.onClick.AddListener(LoadMiniGamesScene);
         preparationButton?.onClick.AddListener(LoadPreparationScene);
         exitButton?.onClick.AddListener(OnExitClick);
         settingsButton?.onClick.AddListener(LoadSettingsScene);
+
+        ApplyRoleFilter();
+    }
+
+    private void ApplyRoleFilter()
+    {
+        if (SessionManager.Instance == null || !SessionManager.Instance.IsLoggedIn) return;
+
+        var role = SessionManager.Instance.Role;
+        var prepText = preparationButton?.GetComponentInChildren<TMPro.TMP_Text>();
+        if (prepText != null)
+            prepText.text = ContentFilter.GetPreparationLabel(role);
+        else
+        {
+            var legacyText = preparationButton?.GetComponentInChildren<Text>();
+            if (legacyText != null)
+                legacyText.text = ContentFilter.GetPreparationLabel(role);
+        }
     }
 
     private void ShowMenuInstantly()
     {
-        Debug.Log("Мгновенное отображение меню");
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ");
 
         if (menuCanvasGroup != null)
         {
@@ -189,55 +207,55 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    // Статический метод для загрузки главного меню из других сцен
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     public static void LoadMainMenuFromOtherScene()
     {
-        Debug.Log("Загрузка главного меню из другой сцены");
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
         SceneManager.LoadScene("MainMenu");
     }
 
-    // Методы загрузки сцен
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     private void LoadLecturesScene()
     {
-        LoadSceneWithValidation(lecturesSceneName, "лекций");
+        LoadSceneWithValidation(lecturesSceneName, "пїЅпїЅпїЅпїЅпїЅпїЅ");
     }
 
     private void LoadMiniGamesScene()
     {
-        LoadSceneWithValidation(miniGamesSceneName, "мини-игр");
+        LoadSceneWithValidation(miniGamesSceneName, "пїЅпїЅпїЅпїЅ-пїЅпїЅпїЅ");
     }
 
     private void LoadPreparationScene()
     {
-        LoadSceneWithValidation(preparationSceneName, "подготовки к ОКР");
+        LoadSceneWithValidation(preparationSceneName, "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ");
     }
 
     public void LoadSettingsScene()
     {
-        LoadSceneWithValidation(settingsSceneName, "настроек");
+        LoadSceneWithValidation(settingsSceneName, "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
     }
 
     private void LoadSceneWithValidation(string sceneName, string sceneDescription)
     {
         if (string.IsNullOrEmpty(sceneName))
         {
-            Debug.LogError($"Имя сцены {sceneDescription} не установлено!");
-            ShowErrorMessage($"Сцена {sceneDescription} не настроена");
+            Debug.LogError($"пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ {sceneDescription} пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!");
+            ShowErrorMessage($"пїЅпїЅпїЅпїЅпїЅ {sceneDescription} пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
             return;
         }
 
         if (!IsSceneInBuildSettings(sceneName))
         {
-            Debug.LogError($"Сцена '{sceneName}' не найдена в Build Settings!");
-            ShowErrorMessage($"Сцена '{sceneName}' не найдена.\nДобавьте её в Build Settings.");
+            Debug.LogError($"пїЅпїЅпїЅпїЅпїЅ '{sceneName}' пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Build Settings!");
+            ShowErrorMessage($"пїЅпїЅпїЅпїЅпїЅ '{sceneName}' пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.\nпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅ Build Settings.");
             return;
         }
 
-        Debug.Log($"Загрузка сцены: {sceneName}");
+        Debug.Log($"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: {sceneName}");
         SceneManager.LoadScene(sceneName);
     }
 
-    // Проверка существования сцены в Build Settings
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ Build Settings
     private bool IsSceneInBuildSettings(string sceneName)
     {
         for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
@@ -253,7 +271,7 @@ public class MainMenuController : MonoBehaviour
         return false;
     }
 
-    // Показать сообщение об ошибке
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     private void ShowErrorMessage(string message)
     {
         GameObject errorObj = new GameObject("ErrorMessage");

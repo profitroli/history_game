@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,9 +17,9 @@ public class NewspaperEditor1 : MonoBehaviour
     }
 
     public List<NewspaperSlot> slots;
-    public Button publishButton; // Твоя кнопка "В печать"
-    public TextMeshProUGUI statusText; // Текст состояния (сверху)
-    public TextMeshProUGUI resultVerdictText; // Новое поле для "Одобрено/Переделайте"
+    public Button publishButton; // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ "пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ"
+    public TextMeshProUGUI statusText; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ)
+    public TextMeshProUGUI resultVerdictText; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
 
     private string selectedMaterial = "";
 
@@ -40,7 +40,7 @@ public class NewspaperEditor1 : MonoBehaviour
     public void SelectMaterial(string content)
     {
         selectedMaterial = content;
-        statusText.text = "Выбрано: " + content;
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + content;
     }
 
     public void PlaceInSlot(int index)
@@ -51,7 +51,7 @@ public class NewspaperEditor1 : MonoBehaviour
         slots[index].slotText.text = selectedMaterial;
         selectedMaterial = "";
 
-        // Сбрасываем цвета кнопок при редактировании
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         ColorBlock cb = slots[index].slotButton.colors;
         cb.normalColor = Color.white;
         cb.selectedColor = Color.white;
@@ -66,7 +66,7 @@ public class NewspaperEditor1 : MonoBehaviour
         if (publishButton != null) publishButton.interactable = true;
     }
 
-    // МЕТОД ДЛЯ КНОПКИ "В ПЕЧАТЬ"
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ "пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ"
     public void FinalCheck()
     {
         int correctCount = 0;
@@ -90,12 +90,13 @@ public class NewspaperEditor1 : MonoBehaviour
 
         if (correctCount == slots.Count)
         {
-            resultVerdictText.text = "ВИЗИТКА ОДОБРЕНА!";
+            resultVerdictText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
             resultVerdictText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         }
         else
         {
-            resultVerdictText.text = "ПЕРЕДЕЛАЙТЕ! ЕСТЬ ОШИБКИ";
+            resultVerdictText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ";
             resultVerdictText.color = Color.red;
         }
     }
@@ -116,7 +117,7 @@ public class NewspaperEditor1 : MonoBehaviour
             s.slotButton.colors = cb;
         }
         if (publishButton != null) publishButton.interactable = false;
-        statusText.text = "Выберите материал и кликните по зоне визитки";
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
         statusText.color = Color.black;
     }
 }

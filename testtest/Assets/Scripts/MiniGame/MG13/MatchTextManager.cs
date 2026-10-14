@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,7 +11,7 @@ public class MatchTextManage : MonoBehaviour
 
     void Start()
     {
-        statusText.text = "Выберите дату слева";
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ";
         statusText.color = Color.black;
     }
     public void LoadLevelByName(string sceneName)
@@ -20,24 +20,24 @@ public class MatchTextManage : MonoBehaviour
     }
     public void SelectDate(MatchTextItem dateItem)
     {
-        // Сбрасываем старое выделение
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (selectedDate != null && !currentMatches.ContainsKey(selectedDate))
             selectedDate.SetColor(Color.black);
 
         selectedDate = dateItem;
         selectedDate.SetColor(Color.blue);
-        statusText.text = "Выбрано: " + dateItem.GetComponent<TextMeshProUGUI>().text + ". Теперь выберите событие.";
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + dateItem.GetComponent<TextMeshProUGUI>().text + ". пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.";
     }
 
     public void SelectEvent(MatchTextItem eventItem)
     {
         if (selectedDate == null) return;
 
-        // --- ЛОГИКА МГНОВЕННОГО ОБМЕНА МЕСТАМИ ---
+        // --- пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ---
         float targetY = selectedDate.transform.localPosition.y;
         MatchTextItem occupant = null;
 
-        // Ищем, кто сейчас занимает эту строку (по Y)
+        // пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅ Y)
         MatchTextItem[] allItems = FindObjectsByType<MatchTextItem>(FindObjectsSortMode.None);
         foreach (var item in allItems)
         {
@@ -48,20 +48,20 @@ public class MatchTextManage : MonoBehaviour
             }
         }
 
-        // Если место занято, отправляем "оккупанта" туда, где сейчас стоит выбранное событие
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ" пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (occupant != null)
         {
             Vector3 tempPos = occupant.transform.localPosition;
             occupant.transform.localPosition = new Vector3(occupant.originalPosition.x, eventItem.transform.localPosition.y, 0);
         }
 
-        // Перемещаем выбранное событие на строку к дате
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
         eventItem.transform.localPosition = new Vector3(eventItem.originalPosition.x, targetY, 0);
 
-        // Обновляем связи в словаре
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (currentMatches.ContainsKey(selectedDate)) currentMatches.Remove(selectedDate);
 
-        // Если это событие уже было привязано к другой дате, освобождаем ту дату
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
         MatchTextItem oldDate = null;
         foreach (var pair in currentMatches) { if (pair.Value == eventItem) oldDate = pair.Key; }
         if (oldDate != null) { currentMatches.Remove(oldDate); oldDate.SetColor(Color.black); }
@@ -72,7 +72,7 @@ public class MatchTextManage : MonoBehaviour
         eventItem.SetColor(Color.purple);
 
         selectedDate = null;
-        statusText.text = "Пара составлена!";
+        statusText.text = "пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
     }
 
     public void CheckAll()
@@ -82,7 +82,7 @@ public class MatchTextManage : MonoBehaviour
 
         if (currentMatches.Count < total)
         {
-            statusText.text = "Составьте ВСЕ пары перед проверкой!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.red;
             return;
         }
@@ -92,6 +92,7 @@ public class MatchTextManage : MonoBehaviour
             if (pair.Key.id == pair.Value.id)
             {
                 pair.Key.SetColor(Color.forestGreen);
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
                 pair.Value.SetColor(Color.forestGreen);
                 correctCount++;
             }
@@ -104,12 +105,12 @@ public class MatchTextManage : MonoBehaviour
 
         if (correctCount == total)
         {
-            statusText.text = "ВЕРНО! Отличная работа.";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.";
             statusText.color = Color.forestGreen;
         }
         else
         {
-            statusText.text = "ОШИБКА! Исправьте красные пары.";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ.";
             statusText.color = Color.red;
         }
     }

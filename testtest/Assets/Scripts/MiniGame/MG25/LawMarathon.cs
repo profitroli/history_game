@@ -1,4 +1,4 @@
-using TMPro;
+п»їusing TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
@@ -16,9 +16,9 @@ public class LawMarathon : MonoBehaviour
     public RectTransform card;
     public TextMeshProUGUI factText;
     public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI feedbackText; // Текст "Молодец!" или "Не то..."
-    public GameObject finishPanel;       // Окно финиша (панель)
-    public TextMeshProUGUI resultText;   // Итоговый текст на панели
+    public TextMeshProUGUI feedbackText; // пїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!" пїЅпїЅпїЅ "пїЅпїЅ пїЅпїЅ..."
+    public GameObject finishPanel;       // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ)
+    public TextMeshProUGUI resultText;   // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
     public float speed = 250f;
     private int currentIndex = -1;
@@ -27,8 +27,8 @@ public class LawMarathon : MonoBehaviour
 
     void Start()
     {
-        ; // Прячем финиш в начале
-        if (feedbackText != null) feedbackText.text = "Принимайте только верные утверждения";      // Очищаем подсказку
+        ; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        if (feedbackText != null) feedbackText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";      // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         PrepareNextFact();
     }
 
@@ -43,7 +43,7 @@ public class LawMarathon : MonoBehaviour
             if (facts[currentIndex].isTrue)
             {
                 score -= 5;
-                ShowFeedback("Пропустил важное! Будь внимательнее.", Color.black);
+                ShowFeedback("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.", Color.black);
             }
             PrepareNextFact();
         }
@@ -58,25 +58,25 @@ public class LawMarathon : MonoBehaviour
             if (facts[currentIndex].isTrue)
             {
                 score += 10;
-                ShowFeedback("Молодец! Правильно выбрал.", Color.forestGreen);
+                ShowFeedback("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.", Color.forestGreen);
             }
             else
             {
                 score -= 10;
-                ShowFeedback("Не то! В следующий раз выбери правильно.", Color.red);
+                ShowFeedback("пїЅпїЅ пїЅпїЅ! пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.", Color.red);
             }
             PrepareNextFact();
         }
     }
 
-    // Метод для отображения короткой подсказки
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     void ShowFeedback(string message, Color color)
     {
         if (feedbackText != null)
         {
             feedbackText.text = message;
             feedbackText.color = color;
-            // Останавливаем старую корутину, если она шла, и запускаем новую
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             StopAllCoroutines();
             StartCoroutine(ClearFeedback());
         }
@@ -102,7 +102,7 @@ public class LawMarathon : MonoBehaviour
         {
             factText.text = facts[currentIndex].text;
             card.anchoredPosition = new Vector2(800f, -35.31f);
-            scoreText.text = "Очки: " + score;
+            scoreText.text = "пїЅпїЅпїЅпїЅ: " + score;
         }
         else
         {
@@ -110,24 +110,26 @@ public class LawMarathon : MonoBehaviour
         }
     }
 
-    // Метод окончания игры
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     void FinishGame()
     {
+        ProgressService.Instance?.ReportGameCompleted(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, score);
         isMoving = false;
         card.gameObject.SetActive(false);
 
         if (finishPanel != null)
         {
-            finishPanel.SetActive(true); // Включаем окно финиша
+            finishPanel.SetActive(true); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
-            // Формируем похвалу в зависимости от очков
-            string praise = score >= 35 ? "Ты настоящий эксперт в праве!" : "Хороший результат, продолжай изучать!";
-            resultText.text = $"ФИНИШ!\nТвой итог: {score} очков.\n{praise}";
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+            string praise = score >= 35 ? "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ!" : "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
+            resultText.text = $"пїЅпїЅпїЅпїЅпїЅ!\nпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ: {score} пїЅпїЅпїЅпїЅпїЅ.\n{praise}";
         }
         else
         {
-            // Если панели нет, выводим просто в текст карточки
-            factText.text = $"ФИНИШ! Очки: {score}";
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+            factText.text = $"пїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅ: {score}";
         }
     }
 }

@@ -6,12 +6,12 @@ public class GameManager : MonoBehaviour
 {
     public DropZone[] zones;
     public TextMeshProUGUI statusText;
-    public int totalCountries; // Укажи здесь общее количество стран в игре
+    public int totalCountries; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
     public string originalStatusText;
 
     void Start()
     {
-        // Запоминаем текст, который ты написала в Unity перед запуском
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Unity пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (statusText != null)
         {
             originalStatusText = statusText.text;
@@ -22,35 +22,37 @@ public class GameManager : MonoBehaviour
         int placedItemsCount = 0;
         bool allGood = true;
 
-        // 1. Считаем, сколько всего карточек положили в зоны
+        // 1. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
         foreach (var zone in zones)
         {
             DragItem[] itemsInZone = zone.GetComponentsInChildren<DragItem>();
             placedItemsCount += itemsInZone.Length;
 
-            // Проверяем правильность
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             foreach (var item in itemsInZone)
             {
                 if (item.type != zone.zoneType) allGood = false;
             }
         }
 
-        // 2. Проверяем условия
+        // 2. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (placedItemsCount == 0)
         {
-            statusText.text = "Сначала распредели!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.purple;
         }
         else if (placedItemsCount < totalCountries)
         {
-            statusText.text = "Размести все карточки!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
             statusText.color = Color.purple;
         }
         else
         {
-            // Если всё заполнено, показываем результат
-            statusText.text = allGood ? "Молодец!!" : "Не правильно, подумай ещё";
+            // пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+            statusText.text = allGood ? "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!!" : "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ";
             statusText.color = allGood ? Color.forestGreen : Color.red;
+            if (allGood)
+                ProgressService.Instance?.ReportGameCompleted(SceneManager.GetActiveScene().name, 1);
         }
     }
     public void LoadLevelByName(string sceneName)
@@ -58,16 +60,16 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    // Функция для кнопки "Сброс"
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅ"
     public void ResetGame()
     {
-        // Находим вообще все карточки в сцене и вызываем их метод сброса
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         DragItem[] allCards = FindObjectsOfType<DragItem>();
         foreach (var card in allCards)
         {
             card.ResetCard();
         }
         statusText.text = originalStatusText;
-        statusText.color = Color.black;// Очищаем текст
+        statusText.color = Color.black;// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     }
 }

@@ -552,6 +552,9 @@ public class VideoPlayerController : MonoBehaviour
 
     void OnVideoFinished(VideoPlayer vp)
     {
+        ProgressService.Instance?.ReportLectureViewed(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+
         videoDisplay.gameObject.SetActive(false);
 
         if (playButton != null)

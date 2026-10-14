@@ -11,7 +11,7 @@ public class MatchDispatcherPro : MonoBehaviour
     {
         public Button problemButton;
         public Button departmentButton;
-        [HideInInspector] public Button currentAssignedDepartment; // Текущий выбор игрока
+        [HideInInspector] public Button currentAssignedDepartment; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     }
 
     public List<MatchPair> pairs;
@@ -23,19 +23,19 @@ public class MatchDispatcherPro : MonoBehaviour
 
     void Start()
     {
-        statusText.text = "Соедините проблемы с ведомствами, затем нажмите 'Проверить'";
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'";
 
-        // Настраиваем кнопки проблем
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         foreach (var pair in pairs)
         {
             Button pBtn = pair.problemButton;
             pBtn.onClick.AddListener(() => SelectProblem(pBtn));
         }
 
-        // Настраиваем кнопки ведомств
-        // Для простоты: все кнопки ведомств должны иметь одинаковый метод
-        // В инспекторе нужно будет убедиться, что все кнопки из списка departmentButton 
-        // вызывают один и тот же метод через код ниже
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+        // пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ departmentButton 
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         foreach (var pair in pairs)
         {
             Button dBtn = pair.departmentButton;
@@ -54,25 +54,25 @@ public class MatchDispatcherPro : MonoBehaviour
     {
         if (selectedProblem == null)
         {
-            statusText.text = "Сначала выберите проблему слева!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ!";
             return;
         }
 
-        // Запоминаем выбор для конкретной проблемы
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         foreach (var pair in pairs)
         {
             if (pair.problemButton == selectedProblem)
             {
-                // Если это ведомство уже было выбрано кем-то другим, очищаем у того
+                // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ-пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
                 foreach (var p in pairs) if (p.currentAssignedDepartment == btn) p.currentAssignedDepartment = null;
 
                 pair.currentAssignedDepartment = btn;
-                statusText.text = "Связь установлена. Ищите следующую пару.";
+                statusText.text = "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ.";
                 break;
             }
         }
 
-        selectedProblem.GetComponent<Image>().color = Color.cyan; // Помечаем, что пара выбрана
+        selectedProblem.GetComponent<Image>().color = Color.cyan; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         selectedProblem = null;
     }
 
@@ -98,7 +98,9 @@ public class MatchDispatcherPro : MonoBehaviour
             }
         }
 
-        statusText.text = $"ИТОГ: Правильно {correct} из {total}. " + (correct == total ? "Вы отличный управленец!" : "Попробуйте еще раз.");
+        statusText.text = $"пїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ {correct} пїЅпїЅ {total}. " + (correct == total ? "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!" : "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ.");
+        if (correct == total)
+            ProgressService.Instance?.ReportGameCompleted(SceneManager.GetActiveScene().name, correct);
     }
 
     public void RestartGame()

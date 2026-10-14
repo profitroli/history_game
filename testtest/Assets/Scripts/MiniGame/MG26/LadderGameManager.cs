@@ -1,18 +1,18 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class LadderGameManager : MonoBehaviour
 {
-    public StepSlot[] slots;            // Все слоты на лестнице
-    public TextMeshProUGUI statusText;  // Текст-помощник
-    public GameObject finishPanel;      // Панель финала (если она у тебя есть)
+    public StepSlot[] slots;            // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public TextMeshProUGUI statusText;  // пїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public GameObject finishPanel;      // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ)
 
     void Start()
     {
-        // Начальный текст по материалам лекции
-        statusText.text = "Расставь титулы от древности (внизу) к современности (вверху)";
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ) пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ)";
     }
 
     public void CheckLadder()
@@ -22,56 +22,57 @@ public class LadderGameManager : MonoBehaviour
 
         foreach (var slot in slots)
         {
-            // Проверяем, есть ли что-то в слоте
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ-пїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
             if (slot != null && slot.transform.childCount > 0)
             {
                 filledSlots++;
 
-                // Ищем скрипт TitleStep на плашке внутри слота
+                // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ TitleStep пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
                 TitleStep item = slot.GetComponentInChildren<TitleStep>();
 
                 if (item != null)
                 {
-                    // ВНИМАНИЕ: Вот исправленная часть для цвета!
-                    // Ищем картинку на самом объекте ИЛИ на его родителе
+                    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ!
+                    // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                     Image itemImage = item.GetComponent<Image>();
                     if (itemImage == null) itemImage = item.GetComponentInParent<Image>();
 
-                    // Сверяем ID плашки и ID слота
+                    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ID пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ ID пїЅпїЅпїЅпїЅпїЅ
                     if (item.titleID == slot.slotID)
                     {
                         correctCount++;
-                        if (itemImage != null) itemImage.color = Color.green; // Верно — зеленый
+                        if (itemImage != null) itemImage.color = Color.green; // пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                     }
                     else
                     {
-                        if (itemImage != null) itemImage.color = Color.red;   // Ошибка — красный
+                        if (itemImage != null) itemImage.color = Color.red;   // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                     }
                 }
             }
         }
 
-        // Логика вывода текста
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (filledSlots == 0)
         {
-            statusText.text = "Поставь хотя бы одну плашку на ступеньку!";
+            statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
         }
         else if (filledSlots < slots.Length)
         {
-            statusText.text = $"Ты расставил не всё! Правильно: {correctCount} из {filledSlots}.";
+            statusText.text = $"пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: {correctCount} пїЅпїЅ {filledSlots}.";
         }
         else
         {
             if (correctCount == slots.Length)
             {
-                // Поздравление по итогам лекции
-                statusText.text = "Молодец!Вы идеально изучили эволюцию власти в Беларуси!";
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+                statusText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
                 statusText.color = Color.forestGreen;
+            ProgressService.Instance?.ReportGameCompleted(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
                 if (finishPanel != null) finishPanel.SetActive(true);
             }
             else
             {
-                statusText.text = $"Почти! Правильно: {correctCount} из {slots.Length}. Попробуй поменять красные.";
+                statusText.text = $"пїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: {correctCount} пїЅпїЅ {slots.Length}. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.";
                 statusText.color = Color.red;
             }
         }

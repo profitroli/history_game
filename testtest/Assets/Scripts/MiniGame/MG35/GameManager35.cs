@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
@@ -17,7 +17,7 @@ public class Stage
 {
     public string stageName;
     [TextArea(2, 4)]
-    public string stageIntroText; // Текст, который появляется в начале этапа
+    public string stageIntroText; // пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     public Sprite characterSprite;
     public Choice[] choices;
 }
@@ -28,12 +28,12 @@ public class GameManager35 : MonoBehaviour
 
     public Stage[] stages;
 
-    // Ссылки на UI элементы
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ UI пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public Image characterImage;
     public TextMeshProUGUI stageText;
     public TextMeshProUGUI progressText;
-    public TextMeshProUGUI stageIntroText; // Текстовое поле для вступительного текста этапа
-    public TextMeshProUGUI feedbackText; // Поле для обратной связи
+    public TextMeshProUGUI stageIntroText; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    public TextMeshProUGUI feedbackText; // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     public Button choiceButtonA;
     public Button choiceButtonB;
     public GameObject winPanel;
@@ -46,7 +46,7 @@ public class GameManager35 : MonoBehaviour
     private const int MAX_BAD_CHOICES = 5;
     private const int REQUIRED_PROGRESS = 4;
 
-    // Цвета для обратной связи
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     private Color goodColor = Color.green;
     public Color badColor = Color.red;
 
@@ -61,7 +61,7 @@ public class GameManager35 : MonoBehaviour
         choiceButtonA.onClick.AddListener(() => MakeChoice(0));
         choiceButtonB.onClick.AddListener(() => MakeChoice(1));
 
-        // Инициализируем тексты
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         feedbackText.text = "";
         stageIntroText.text = "";
 
@@ -78,24 +78,24 @@ public class GameManager35 : MonoBehaviour
 
         var stage = stages[currentStageIndex];
 
-        // Обновляем UI
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ UI
         characterImage.sprite = stage.characterSprite;
-        stageText.text = $"Этап {currentStageIndex + 1}: {stage.stageName}";
-        progressText.text = $"Прогресс этапа: {stageProgress}/{REQUIRED_PROGRESS}";
+        stageText.text = $"пїЅпїЅпїЅпїЅ {currentStageIndex + 1}: {stage.stageName}";
+        progressText.text = $"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: {stageProgress}/{REQUIRED_PROGRESS}";
 
-        // Показываем вступительный текст этапа
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         ShowStageIntro(stage.stageIntroText);
 
-        // Загружаем текущий выбор
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         LoadCurrentChoice();
     }
 
     void ShowStageIntro(string introText)
     {
         stageIntroText.text = introText;
-        stageIntroText.color = Color.blue; // Синий цвет для вступительного текста
+        stageIntroText.color = Color.blue; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
-        // Автоматически скрываем через 3 секунды
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ 3 пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         StartCoroutine(HideStageIntroAfterDelay(3f));
     }
 
@@ -103,7 +103,7 @@ public class GameManager35 : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        // Плавно скрываем текст
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         float fadeDuration = 0.2f;
         float elapsedTime = 0f;
         Color startColor = stageIntroText.color;
@@ -141,9 +141,9 @@ public class GameManager35 : MonoBehaviour
 
         int impact = (choiceType == 0) ? choice.choiceAImpact : choice.choiceBImpact;
 
-        if (impact < 0) // Плохой выбор
+        if (impact < 0) // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         {
-            ShowFeedback("Неверно!", badColor);
+            ShowFeedback("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!", badColor);
             badChoicesCount++;
             if (badChoicesCount >= MAX_BAD_CHOICES)
             {
@@ -151,25 +151,25 @@ public class GameManager35 : MonoBehaviour
                 return;
             }
 
-            // Откат на предыдущий выбор
+            // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             if (currentChoiceIndex > 0)
                 currentChoiceIndex--;
 
-            // Отнимаем прогресс
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             stageProgress = Mathf.Max(0, stageProgress - 1);
         }
-        else // Хороший выбор
+        else // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         {
             stageProgress += impact;
 
-            // Переходим к следующему выбору
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             if (currentChoiceIndex < stage.choices.Length - 1)
                 currentChoiceIndex++;
 
-            // Проверяем завершение этапа
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             if (stageProgress >= REQUIRED_PROGRESS)
             {
-                // Переходим на следующий этап
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
                 currentStageIndex++;
                 currentChoiceIndex = 0;
                 stageProgress = 0;
@@ -180,7 +180,7 @@ public class GameManager35 : MonoBehaviour
             }
         }
 
-        progressText.text = $"Прогресс этапа: {stageProgress}/{REQUIRED_PROGRESS}";
+        progressText.text = $"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: {stageProgress}/{REQUIRED_PROGRESS}";
         LoadCurrentChoice();
     }
 
@@ -213,6 +213,8 @@ public class GameManager35 : MonoBehaviour
 
     void ShowWinScreen()
     {
+        ProgressService.Instance?.ReportGameCompleted(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, 1);
         winPanel.SetActive(true);
         choiceButtonA.gameObject.SetActive(false);
         choiceButtonB.gameObject.SetActive(false);
