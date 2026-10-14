@@ -133,5 +133,19 @@ mergeInto(LibraryManager.library, {
           requestId: requestId, success: false, error: err.message
         }));
       });
+  },
+
+  DownloadCsvWebGL: function(csvPtr, filenamePtr) {
+    var csv = UTF8ToString(csvPtr);
+    var filename = UTF8ToString(filenamePtr);
+    var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 });

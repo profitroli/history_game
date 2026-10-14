@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class GroupService
 {
-    public static async Task<GroupData> CreateGroup(string name, string program)
+    public static async Task<GroupData> CreateGroup(string name, string program, string institution = "")
     {
         string code = GenerateCode();
         string groupId = Guid.NewGuid().ToString("N").Substring(0, 12);
@@ -19,6 +19,8 @@ public static class GroupService
             { "program", program },
             { "teacherUid", teacherUid },
             { "teacherName", teacherName },
+            { "institution", institution },
+            { "archived", false },
             { "createdAt", DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
         };
 
@@ -122,6 +124,20 @@ public static class GroupService
         if (doc == null) return new ProgressData();
         // TODO: десериализовать вложенные map-поля
         return new ProgressData();
+    }
+
+    public static string GetInviteLink(string code)
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        string baseUrl = Application.absoluteURL;
+        int queryIdx = baseUrl.IndexOf('?');
+        if (queryIdx > 0) baseUrl = baseUrl.Substring(0, queryIdx);
+        int hashIdx = baseUrl.IndexOf('#');
+        if (hashIdx > 0) baseUrl = baseUrl.Substring(0, hashIdx);
+        return $"{baseUrl}?code={code}";
+#else
+        return $"https://your-game-url.com/?code={code}";
+#endif
     }
 
     private static string GenerateCode()

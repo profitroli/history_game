@@ -50,6 +50,31 @@ public class LoginController : MonoBehaviour
         if (backFromRoleButton != null) backFromRoleButton.onClick.AddListener(ShowLoginPanel);
 
         ShowLoginPanel();
+        CheckInviteLink();
+    }
+
+    private void CheckInviteLink()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        string url = Application.absoluteURL;
+        if (!string.IsNullOrEmpty(url) && url.Contains("code="))
+        {
+            int idx = url.IndexOf("code=") + 5;
+            string code = "";
+            for (int i = idx; i < url.Length && i < idx + 6; i++)
+            {
+                char c = url[i];
+                if (c == '&' || c == '#') break;
+                code += c;
+            }
+            if (code.Length >= 6 && regGroupCodeInput != null)
+            {
+                regGroupCodeInput.text = code;
+                ShowRegisterPanel();
+                Debug.Log($"[Login] Инвайт-код из URL: {code}");
+            }
+        }
+#endif
     }
 
     private void EnsureServices()

@@ -32,9 +32,18 @@ public class TeacherDashboardController : MonoBehaviour
     [SerializeField] private GameObject studentRowPrefab;
     [SerializeField] private Button backFromDetailButton;
     [SerializeField] private Button refreshButton;
+    [SerializeField] private Button exportCsvButton;
+    [SerializeField] private Button archiveGroupButton;
+    [SerializeField] private Toggle showArchivedToggle;
+
+    [Header("Создание группы — доп. поля")]
+    [SerializeField] private TMP_InputField institutionInput;
 
     private List<GroupData> groups = new List<GroupData>();
+    private List<UserData> currentStudents = new List<UserData>();
+    private List<ProgressData> currentProgressList = new List<ProgressData>();
     private string selectedGroupId;
+    private bool showArchived;
 
     void Start()
     {
@@ -54,6 +63,9 @@ public class TeacherDashboardController : MonoBehaviour
         if (cancelCreateButton != null) cancelCreateButton.onClick.AddListener(HideCreateGroupPanel);
         if (backFromDetailButton != null) backFromDetailButton.onClick.AddListener(ShowGroupsList);
         if (refreshButton != null) refreshButton.onClick.AddListener(RefreshStudents);
+        if (exportCsvButton != null) exportCsvButton.onClick.AddListener(ExportToCsv);
+        if (archiveGroupButton != null) archiveGroupButton.onClick.AddListener(ArchiveSelectedGroup);
+        if (showArchivedToggle != null) showArchivedToggle.onValueChanged.AddListener(OnShowArchivedChanged);
 
         HideAllPanels();
         LoadGroups();
@@ -85,7 +97,21 @@ public class TeacherDashboardController : MonoBehaviour
             return;
         }
 
-        foreach (var group in groups)
+        var visibleGroups = groups.FindAll(g => showArchived || !g.archived);
+        if (visibleGroups.Count == 0)
+        {
+            var emptyObj2 = new GameObject("EmptyMsg");
+            emptyObj2.transform.SetParent(groupsListContent, false);
+            var t = emptyObj2.AddComponent<TextMeshProUGUI>();
+            t.text = showArchived ? "Нет архивных групп" : "Нет активных групп. Нажмите «Создать группу»";
+            t.fontSize = 18;
+            t.alignment = TextAlignmentOptions.Center;
+            var r = emptyObj2.GetComponent<RectTransform>();
+            r.sizeDelta = new Vector2(600, 60);
+            return;
+        }
+
+        foreach (var group in visibleGroups)
         {
             GameObject card;
             if (groupCardPrefab != null)
@@ -163,6 +189,8 @@ public class TeacherDashboardController : MonoBehaviour
             Destroy(child.gameObject);
 
         var students = await GroupService.GetGroupStudents(groupId);
+        currentStudents = students;
+        currentProgressList.Clear();
 
         if (students.Count == 0)
         {
@@ -179,6 +207,7 @@ public class TeacherDashboardController : MonoBehaviour
         foreach (var student in students)
         {
             var progress = await GroupService.GetStudentProgress(student.uid);
+            currentProgressList.Add(progress);
 
             GameObject row;
             if (studentRowPrefab != null)
@@ -250,11 +279,13 @@ public class TeacherDashboardController : MonoBehaviour
         }
 
         string program = (schoolProgramToggle != null && schoolProgramToggle.isOn) ? "school" : "university";
-        var group = await GroupService.CreateGroup(name, program);
+        string institution = institutionInput?.text?.Trim() ?? "";
+        var group = await GroupService.CreateGroup(name, program, institution);
 
         if (group != null)
         {
-            if (createdCodeText != null) createdCodeText.text = $"Код группы: {group.code}";
+            string inviteLink = GroupService.GetInviteLink(group.code);
+            if (createdCodeText != null) createdCodeText.text = $"Код группы: {group.code}\nСсылка: {inviteLink}";
             if (codeDisplayPanel != null) codeDisplayPanel.SetActive(true);
             LoadGroups();
         }
@@ -289,4 +320,71 @@ public class TeacherDashboardController : MonoBehaviour
         SessionManager.Instance?.Clear();
         SceneManager.LoadScene("LoginScene");
     }
+
+    private void OnShowArchivedChanged(bool show)
+    {
+        showArchived = show;
+        DisplayGroups();
+    }
+
+    private async void ArchiveSelectedGroup()
+    {
+        if (string.IsNullOrEmpty(selectedGroupId)) return;
+
+        var group = groups.Find(g => g.groupId == selectedGroupId);
+        if (group == null) return;
+
+        bool newState = !group.archived;
+        var data = new Dictionary<string, object> { { "archived", newState } };
+        bool ok = await FirebaseManager.Instance.Service.UpdateDocument("groups", selectedGroupId, data);
+
+        if (ok)
+        {
+            group.archived = newState;
+            Debug.Log($"[Teacher] Группа {group.name} {(newState ? "архивирована" : "восстановлена")}");
+            if (groupDetailPanel != null) groupDetailPanel.SetActive(false);
+            DisplayGroups();
+        }
+    }
+
+    private void ExportToCsv()
+    {
+        if (currentStudents.Count == 0)
+        {
+            Debug.LogWarning("[Teacher] Нет данных для экспорта");
+            return;
+        }
+
+        var group = groups.Find(g => g.groupId == selectedGroupId);
+        string groupName = group?.name ?? "group";
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("Имя,Лекции,Игры,Тесты,Средний балл %");
+
+        for (int i = 0; i < currentStudents.Count; i++)
+        {
+            var student = currentStudents[i];
+            var progress = i < currentProgressList.Count ? currentProgressList[i] : new ProgressData();
+            sb.AppendLine($"\"{student.displayName}\",{progress.LecturesCompleted},{progress.GamesCompleted},{progress.TestsCompleted},{progress.AverageTestScore:F0}");
+        }
+
+        string csv = sb.ToString();
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        DownloadCsvWebGL(csv, $"{groupName}_report.csv");
+#else
+        string path = System.IO.Path.Combine(
+            System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
+            $"{groupName}_report.csv");
+        System.IO.File.WriteAllText(path, csv, System.Text.Encoding.UTF8);
+        Debug.Log($"[Teacher] Отчёт сохранён: {path}");
+#endif
+    }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern void DownloadCsvWebGL(string csv, string filename);
+#else
+    private static void DownloadCsvWebGL(string csv, string filename) { }
+#endif
 }
