@@ -32,6 +32,7 @@ public class ProgressService : MonoBehaviour
         currentProgress.lectures[lectureName] = timestamp;
         MarkDirty();
         Debug.Log($"[ProgressService] Лекция просмотрена: {lectureName}");
+        CheckAvatarUnlocks();
     }
 
     public void ReportGameCompleted(string gameName, int score)
@@ -44,6 +45,7 @@ public class ProgressService : MonoBehaviour
         };
         MarkDirty();
         Debug.Log($"[ProgressService] Игра пройдена: {gameName}, счёт: {score}");
+        CheckAvatarUnlocks();
     }
 
     public void ReportTestCompleted(string testName, int score, int total)
@@ -57,6 +59,12 @@ public class ProgressService : MonoBehaviour
         };
         MarkDirty();
         Debug.Log($"[ProgressService] Тест пройден: {testName}, {score}/{total}");
+        CheckAvatarUnlocks();
+    }
+
+    private void CheckAvatarUnlocks()
+    {
+        AvatarController.ShowNewUnlockNotification();
     }
 
     public async void LoadFromFirestore()
