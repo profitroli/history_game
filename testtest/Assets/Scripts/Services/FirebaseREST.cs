@@ -44,6 +44,7 @@ public class FirebaseREST : IFirebaseService
         idToken = null;
         refreshToken = null;
         currentUserId = null;
+        tokenAge = 0;
     }
 
     public string GetCurrentUserId() => currentUserId;

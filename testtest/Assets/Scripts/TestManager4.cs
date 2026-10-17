@@ -274,6 +274,9 @@ public class TestManager4 : MonoBehaviour
         // Вывести итоговый счет
         scoreText.text = $"Правильных ответов: {playerScore} из {questions.Count}";
 
+
+        ProgressService.Instance?.ReportTestCompleted(
+            SceneManager.GetActiveScene().name, playerScore, questions.Count);
         // Построить детализированный список
         StringBuilder resultListBuilder = new StringBuilder();
 

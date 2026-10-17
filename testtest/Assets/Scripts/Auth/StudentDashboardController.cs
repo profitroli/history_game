@@ -25,8 +25,12 @@ public class StudentDashboardController : MonoBehaviour
 
     void OnEnable()
     {
+        if (closeButton != null)
+        {
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(() => gameObject.SetActive(false));
+        }
         UpdateDisplay();
-        if (closeButton != null) closeButton.onClick.AddListener(() => gameObject.SetActive(false));
     }
 
     public void UpdateDisplay()

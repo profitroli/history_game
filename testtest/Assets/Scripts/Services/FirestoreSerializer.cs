@@ -50,22 +50,7 @@ public static class FirestoreSerializer
 
     public static Dictionary<string, object> DeserializeDocument(string json)
     {
-        try
-        {
-            var result = new Dictionary<string, object>();
-            var doc = JsonUtility.FromJson<FirestoreDocument>(json);
-            if (doc?.fields == null) return result;
-
-            foreach (var field in doc.fields)
-                result[field.key] = ExtractValue(field);
-
-            return result;
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"[FirestoreSerializer] Ошибка парсинга: {e.Message}");
-            return ParseFieldsManually(json);
-        }
+        return ParseFieldsManually(json);
     }
 
     public static List<Dictionary<string, object>> DeserializeQueryResults(string json)

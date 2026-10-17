@@ -119,7 +119,7 @@ public class ProgressService : MonoBehaviour
         try
         {
             var data = SerializeProgress();
-            await FirebaseManager.Instance.Service.SetDocument("progress", SessionManager.Instance.UserId, data);
+            await FirebaseManager.Instance.Service.UpdateDocument("progress", SessionManager.Instance.UserId, data);
             Debug.Log("[ProgressService] Прогресс сохранён в Firestore");
         }
         catch (Exception e)
