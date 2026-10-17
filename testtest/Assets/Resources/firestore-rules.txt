@@ -1,0 +1,36 @@
+// Firestore Security Rules for History Game
+// Скопируй эти правила в Firebase Console → Firestore → Rules → Edit rules
+// Затем нажми Publish
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users: каждый может читать/писать только свой документ
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      // Учитель может читать данные учеников своих групп
+      allow read: if request.auth != null
+        && exists(/databases/$(database)/documents/groups/$(resource.data.groupId))
+        && get(/databases/$(database)/documents/groups/$(resource.data.groupId)).data.teacherUid == request.auth.uid;
+    }
+
+    // Groups: учитель создаёт, все авторизованные читают (для JoinGroup по коду)
+    match /groups/{groupId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.teacherUid == request.auth.uid;
+      allow update: if request.auth != null
+        && resource.data.teacherUid == request.auth.uid;
+    }
+
+    // Progress: каждый пишет свой, учитель читает учеников
+    match /progress/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null;
+      // Примечание: для строгой проверки "учитель ли это" нужен
+      // запрос к группе ученика — Firestore rules не поддерживают
+      // сложные join-ы. Для MVP оставляем read всем авторизованным.
+    }
+  }
+}

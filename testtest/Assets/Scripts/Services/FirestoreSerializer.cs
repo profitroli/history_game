@@ -156,8 +156,28 @@ public static class FirestoreSerializer
                         case "doubleValue": result[key] = double.TryParse(rawVal, out double dv) ? (object)dv : rawVal; break;
                         case "booleanValue": result[key] = rawVal == "true"; break;
                     }
+                    pos = valueTypeEnd + 1;
                 }
-                pos = valueTypeEnd + 1;
+                else if (valueType == "mapValue")
+                {
+                    int mColon = json.IndexOf(":", valueTypeEnd);
+                    int mBrace = mColon >= 0 ? json.IndexOf("{", mColon) : -1;
+                    if (mBrace >= 0)
+                    {
+                        int mEnd = FindMatchingBrace(json, mBrace);
+                        if (mEnd > mBrace)
+                        {
+                            result[key] = ParseFieldsManually(json.Substring(mBrace, mEnd - mBrace + 1));
+                            pos = mEnd + 1;
+                        }
+                        else pos = valueTypeEnd + 1;
+                    }
+                    else pos = valueTypeEnd + 1;
+                }
+                else
+                {
+                    pos = valueTypeEnd + 1;
+                }
             }
             else
             {
@@ -165,6 +185,26 @@ public static class FirestoreSerializer
             }
         }
         return result;
+    }
+
+    private static int FindMatchingBrace(string json, int openPos)
+    {
+        int d = 0;
+        bool inStr = false;
+        for (int i = openPos; i < json.Length; i++)
+        {
+            char c = json[i];
+            if (inStr)
+            {
+                if (c == '\\') { i++; continue; }
+                if (c == '"') inStr = false;
+                continue;
+            }
+            if (c == '"') { inStr = true; continue; }
+            if (c == '{') d++;
+            if (c == '}') { d--; if (d == 0) return i; }
+        }
+        return -1;
     }
 
     private static object ExtractValue(FirestoreField field) => field.stringValue;

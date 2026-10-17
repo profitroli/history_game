@@ -159,40 +159,58 @@ public class ProgressService : MonoBehaviour
 
     private void DeserializeProgress(Dictionary<string, object> doc)
     {
-        currentProgress = new ProgressData();
-        // TODO: парсинг вложенных map-полей из Firestore
+        currentProgress = ProgressData.FromFirestoreDoc(doc);
     }
 
     private void SaveToPlayerPrefs()
     {
-        string json = JsonUtility.ToJson(new ProgressWrapper
+        var wrapper = new ProgressWrapper();
+        foreach (var kv in currentProgress.lectures)
         {
-            lectureKeys = new List<string>(currentProgress.lectures.Keys),
-            gameKeys = new List<string>(currentProgress.games.Keys),
-            testKeys = new List<string>(currentProgress.tests.Keys)
-        });
-        PlayerPrefs.SetString("LocalProgress", json);
+            wrapper.lectureKeys.Add(kv.Key);
+            wrapper.lectureTimestamps.Add(kv.Value);
+        }
+        foreach (var kv in currentProgress.games)
+        {
+            wrapper.gameKeys.Add(kv.Key);
+            wrapper.gameScores.Add(kv.Value.score);
+            wrapper.gameTimestamps.Add(kv.Value.completedAt);
+        }
+        foreach (var kv in currentProgress.tests)
+        {
+            wrapper.testKeys.Add(kv.Key);
+            wrapper.testScores.Add(kv.Value.score);
+            wrapper.testTotals.Add(kv.Value.total);
+            wrapper.testTimestamps.Add(kv.Value.completedAt);
+        }
+        PlayerPrefs.SetString("LocalProgress", JsonUtility.ToJson(wrapper));
         PlayerPrefs.Save();
     }
 
     private void LoadFromPlayerPrefs()
     {
         string json = PlayerPrefs.GetString("LocalProgress", "");
-        if (!string.IsNullOrEmpty(json))
+        if (string.IsNullOrEmpty(json)) return;
+        try
         {
-            try
-            {
-                var wrapper = JsonUtility.FromJson<ProgressWrapper>(json);
-                long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                foreach (var key in wrapper.lectureKeys)
-                    currentProgress.lectures[key] = now;
-                foreach (var key in wrapper.gameKeys)
-                    currentProgress.games[key] = new GameProgress { score = 1, completedAt = now };
-                foreach (var key in wrapper.testKeys)
-                    currentProgress.tests[key] = new TestProgress { score = 0, total = 0, completedAt = now };
-            }
-            catch { }
+            var w = JsonUtility.FromJson<ProgressWrapper>(json);
+            for (int i = 0; i < w.lectureKeys.Count; i++)
+                currentProgress.lectures[w.lectureKeys[i]] = i < w.lectureTimestamps.Count ? w.lectureTimestamps[i] : 0;
+            for (int i = 0; i < w.gameKeys.Count; i++)
+                currentProgress.games[w.gameKeys[i]] = new GameProgress
+                {
+                    score = i < w.gameScores.Count ? w.gameScores[i] : 1,
+                    completedAt = i < w.gameTimestamps.Count ? w.gameTimestamps[i] : 0
+                };
+            for (int i = 0; i < w.testKeys.Count; i++)
+                currentProgress.tests[w.testKeys[i]] = new TestProgress
+                {
+                    score = i < w.testScores.Count ? w.testScores[i] : 0,
+                    total = i < w.testTotals.Count ? w.testTotals[i] : 0,
+                    completedAt = i < w.testTimestamps.Count ? w.testTimestamps[i] : 0
+                };
         }
+        catch { }
     }
 
     void OnApplicationQuit()
@@ -208,7 +226,13 @@ public class ProgressService : MonoBehaviour
     private class ProgressWrapper
     {
         public List<string> lectureKeys = new List<string>();
+        public List<long> lectureTimestamps = new List<long>();
         public List<string> gameKeys = new List<string>();
+        public List<int> gameScores = new List<int>();
+        public List<long> gameTimestamps = new List<long>();
         public List<string> testKeys = new List<string>();
+        public List<int> testScores = new List<int>();
+        public List<int> testTotals = new List<int>();
+        public List<long> testTimestamps = new List<long>();
     }
 }

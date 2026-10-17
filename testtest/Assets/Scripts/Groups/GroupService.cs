@@ -91,7 +91,9 @@ public static class GroupService
                 code = doc.ContainsKey("code") ? doc["code"].ToString() : "",
                 program = doc.ContainsKey("program") ? doc["program"].ToString() : "",
                 teacherUid = doc.ContainsKey("teacherUid") ? doc["teacherUid"].ToString() : "",
-                teacherName = doc.ContainsKey("teacherName") ? doc["teacherName"].ToString() : ""
+                teacherName = doc.ContainsKey("teacherName") ? doc["teacherName"].ToString() : "",
+                institution = doc.ContainsKey("institution") ? doc["institution"].ToString() : "",
+                archived = doc.ContainsKey("archived") && doc["archived"] is bool b && b
             });
         }
         return groups;
@@ -121,9 +123,7 @@ public static class GroupService
     public static async Task<ProgressData> GetStudentProgress(string studentUid)
     {
         var doc = await FirebaseManager.Instance.Service.GetDocument("progress", studentUid);
-        if (doc == null) return new ProgressData();
-        // TODO: десериализовать вложенные map-поля
-        return new ProgressData();
+        return ProgressData.FromFirestoreDoc(doc);
     }
 
     public static string GetInviteLink(string code)
