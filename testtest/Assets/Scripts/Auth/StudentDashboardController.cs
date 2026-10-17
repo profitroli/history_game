@@ -48,7 +48,7 @@ public class StudentDashboardController : MonoBehaviour
             if (SessionManager.Instance.IsSelfStudy)
                 groupInfoText.text = "Самостоятельное изучение";
             else
-                groupInfoText.text = $"Группа: {SessionManager.Instance.GroupId}";
+                LoadGroupName();
         }
 
         float lecturesPct = totalLectures > 0 ? (float)progress.LecturesCompleted / totalLectures : 0;
@@ -81,5 +81,22 @@ public class StudentDashboardController : MonoBehaviour
         if (lecturesBar != null) lecturesBar.fillAmount = lecturesPct;
         if (gamesBar != null) gamesBar.fillAmount = gamesPct;
         if (testsBar != null) testsBar.fillAmount = testsPct;
+    }
+
+    private async void LoadGroupName()
+    {
+        string gid = SessionManager.Instance.GroupId;
+        if (string.IsNullOrEmpty(gid))
+        {
+            if (groupInfoText != null) groupInfoText.text = "";
+            return;
+        }
+        var doc = await FirebaseManager.Instance.Service.GetDocument("groups", gid);
+        string gName = doc != null && doc.ContainsKey("name") ? doc["name"].ToString() : gid;
+        string teacher = doc != null && doc.ContainsKey("teacherName") ? doc["teacherName"].ToString() : "";
+        if (groupInfoText != null)
+            groupInfoText.text = string.IsNullOrEmpty(teacher)
+                ? $"Группа: {gName}"
+                : $"Группа: {gName} • {teacher}";
     }
 }

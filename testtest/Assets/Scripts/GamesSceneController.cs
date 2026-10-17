@@ -4,60 +4,66 @@ using UnityEngine.UI;
 
 public class GamesSceneController : MonoBehaviour
 {
-    [Header("Кнопки игр")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ")]
     [SerializeField] private Button[] gameButtons;
 
-    [Header("Навигационные кнопки")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private Button backButton;
-    [SerializeField] private Button okrPreparationButton; // Новая кнопка для перехода к ОКР
+    [SerializeField] private Button okrPreparationButton; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ
 
-    [Header("Описание игр")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ")]
     [SerializeField]
     private string[] gameNames = {
-        "пример",
-        "пример",
-        "пример",
-        "пример",
-        "пример"
+        "пїЅпїЅпїЅпїЅпїЅпїЅ",
+        "пїЅпїЅпїЅпїЅпїЅпїЅ",
+        "пїЅпїЅпїЅпїЅпїЅпїЅ",
+        "пїЅпїЅпїЅпїЅпїЅпїЅ",
+        "пїЅпїЅпїЅпїЅпїЅпїЅ"
     };
 
-    [Header("Настройки сцен")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ")]
     [SerializeField] private string mainMenuName = "MainMenu";
-    [SerializeField] private string okrPreparationSceneName = "PreparationScene"; // Название сцены подготовки к ОКР
+    [SerializeField] private string okrPreparationSceneName = "PreparationScene"; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ
 
-    private GameObject currentMessage; // Для отслеживания текущего сообщения
+    private GameObject currentMessage; // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
     void Start()
     {
-        // Настраиваем кнопки игр
         for (int i = 0; i < Mathf.Min(gameButtons.Length, gameNames.Length); i++)
         {
             int index = i;
             gameButtons[i].onClick.AddListener(() => OnGameButtonClick(index));
 
-            // Меняем текст на кнопке
             Text buttonText = gameButtons[i].GetComponentInChildren<Text>();
             if (buttonText != null)
-            {
                 buttonText.text = gameNames[i];
-            }
         }
 
-        // Кнопка назад возвращает в главное меню
         if (backButton != null)
-        {
             backButton.onClick.AddListener(ReturnToMainMenu);
-        }
 
-        // Настройка кнопки перехода к подготовке ОКР
+        if (okrPreparationButton != null)
+            okrPreparationButton.onClick.AddListener(GoToOKRPreparation);
+
+        ApplyRoleFilter();
+    }
+
+    private void ApplyRoleFilter()
+    {
+        if (SessionManager.Instance == null || !SessionManager.Instance.IsLoggedIn) return;
+        var role = SessionManager.Instance.Role;
+
         if (okrPreparationButton != null)
         {
-            // Добавляем обработчик клика
-            okrPreparationButton.onClick.AddListener(GoToOKRPreparation);
-        }
-        else
-        {
-            Debug.LogWarning("Кнопка перехода к ОКР не назначена в инспекторе!");
+            var tmpText = okrPreparationButton.GetComponentInChildren<TMPro.TMP_Text>();
+            if (tmpText != null)
+                tmpText.text = ContentFilter.GetPreparationLabel(role);
+            else
+            {
+                var legacyText = okrPreparationButton.GetComponentInChildren<Text>();
+                if (legacyText != null)
+                    legacyText.text = ContentFilter.GetPreparationLabel(role);
+            }
         }
     }
     public void LoadLevelByName(string sceneName)
@@ -66,23 +72,23 @@ public class GamesSceneController : MonoBehaviour
     }
     void ReturnToMainMenu()
     {
-        // Прямая загрузка сцены без эффектов затемнения
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         SceneManager.LoadScene(mainMenuName);
     }
 
     void GoToOKRPreparation()
     {
-        Debug.Log($"Переход к подготовке ОКР: {okrPreparationSceneName}");
+        Debug.Log($"пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ: {okrPreparationSceneName}");
 
-        // Проверяем, существует ли сцена с таким именем
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (SceneExists(okrPreparationSceneName))
         {
             SceneManager.LoadScene(okrPreparationSceneName);
         }
         else
         {
-            ShowErrorMessage($"Сцена '{okrPreparationSceneName}' не найдена!");
-            Debug.LogError($"Сцена '{okrPreparationSceneName}' не найдена. Проверьте название в Build Settings.");
+            ShowErrorMessage($"пїЅпїЅпїЅпїЅпїЅ '{okrPreparationSceneName}' пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!");
+            Debug.LogError($"пїЅпїЅпїЅпїЅпїЅ '{okrPreparationSceneName}' пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Build Settings.");
         }
     }
 
@@ -90,22 +96,22 @@ public class GamesSceneController : MonoBehaviour
     {
         if (gameIndex >= 0 && gameIndex < gameNames.Length)
         {
-            Debug.Log($"Выбрана игра: {gameNames[gameIndex]}");
+            Debug.Log($"пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ: {gameNames[gameIndex]}");
             ShowGameMessage(gameNames[gameIndex]);
         }
     }
 
     void ShowGameMessage(string gameName)
     {
-        // Удаляем предыдущее сообщение, если оно есть
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         if (currentMessage != null)
         {
             Destroy(currentMessage);
         }
 
-        // Создаем сообщение
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         GameObject message = new GameObject("Message");
-        currentMessage = message; // Сохраняем ссылку на текущее сообщение
+        currentMessage = message; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
         Canvas canvas = FindObjectOfType<Canvas>();
         if (canvas != null)
@@ -113,46 +119,46 @@ public class GamesSceneController : MonoBehaviour
             message.transform.SetParent(canvas.transform);
         }
 
-        // Позиционируем по центру
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         RectTransform rect = message.AddComponent<RectTransform>();
         rect.anchoredPosition = Vector2.zero;
         rect.sizeDelta = new Vector2(400, 200);
 
-        // Добавляем фон
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
         Image background = message.AddComponent<Image>();
         background.color = new Color(0, 0, 0, 0.8f);
 
-        // Добавляем текст
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         GameObject textObj = new GameObject("Text");
         textObj.transform.SetParent(message.transform);
 
         Text text = textObj.AddComponent<Text>();
-        text.text = $"Игра '{gameName}' в разработке!";
+        text.text = $"пїЅпїЅпїЅпїЅ '{gameName}' пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
         text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
         text.fontSize = 24;
         text.color = Color.white;
         text.alignment = TextAnchor.MiddleCenter;
 
-        // Растягиваем текст на всю панель
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         RectTransform textRect = textObj.GetComponent<RectTransform>();
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = Vector2.one;
         textRect.offsetMin = Vector2.zero;
         textRect.offsetMax = Vector2.zero;
 
-        // Удаляем через 2 секунды
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ 2 пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Destroy(message, 2f);
     }
 
     void ShowErrorMessage(string errorMessage)
     {
-        // Удаляем предыдущее сообщение, если оно есть
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         if (currentMessage != null)
         {
             Destroy(currentMessage);
         }
 
-        // Создаем сообщение об ошибке
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         GameObject message = new GameObject("ErrorMessage");
         currentMessage = message;
 
@@ -162,16 +168,16 @@ public class GamesSceneController : MonoBehaviour
             message.transform.SetParent(canvas.transform);
         }
 
-        // Позиционируем по центру
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         RectTransform rect = message.AddComponent<RectTransform>();
         rect.anchoredPosition = Vector2.zero;
         rect.sizeDelta = new Vector2(500, 250);
 
-        // Добавляем фон (красный для ошибки)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)
         Image background = message.AddComponent<Image>();
         background.color = new Color(0.8f, 0, 0, 0.9f);
 
-        // Добавляем текст
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         GameObject textObj = new GameObject("Text");
         textObj.transform.SetParent(message.transform);
 
@@ -185,20 +191,20 @@ public class GamesSceneController : MonoBehaviour
         text.resizeTextMinSize = 10;
         text.resizeTextMaxSize = 24;
 
-        // Растягиваем текст на всю панель
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         RectTransform textRect = textObj.GetComponent<RectTransform>();
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = Vector2.one;
         textRect.offsetMin = new Vector2(10, 10);
         textRect.offsetMax = new Vector2(-10, -10);
 
-        // Удаляем через 3 секунды
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ 3 пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Destroy(message, 3f);
     }
 
     bool SceneExists(string sceneName)
     {
-        // Проверяем, существует ли сцена в Build Settings
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ Build Settings
         for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
         {
             string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
@@ -214,7 +220,7 @@ public class GamesSceneController : MonoBehaviour
 
     void OnDestroy()
     {
-        // Очищаем ссылку при уничтожении объекта
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (currentMessage != null)
         {
             Destroy(currentMessage);

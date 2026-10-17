@@ -1,13 +1,46 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class SettingsController : MonoBehaviour
 {
-    // Метод для перехода на сцену подготовки
+    [Header("РќР°РІРёРіР°С†РёСЏ")]
+    [SerializeField] private Button backButton;
+
+    [Header("РђРєРєР°СѓРЅС‚ (РѕРїС†РёРѕРЅР°Р»СЊРЅРѕ)")]
+    [SerializeField] private Button logoutButton;
+    [SerializeField] private TMP_Text userInfoText;
+
+    void Start()
+    {
+        if (backButton != null) backButton.onClick.AddListener(LoadMainMenu);
+        if (logoutButton != null) logoutButton.onClick.AddListener(OnLogout);
+        UpdateUserInfo();
+    }
+
     public void LoadMainMenu()
     {
-        // Убедитесь, что сцена "PreparationScene" добавлена в Build Settings
         SceneManager.LoadScene("MainMenu");
+    }
+
+    private void OnLogout()
+    {
+        FirebaseManager.Instance?.Service?.SignOut();
+        SessionManager.Instance?.Clear();
+        SceneManager.LoadScene("LoginScene");
+    }
+
+    private void UpdateUserInfo()
+    {
+        if (userInfoText == null || SessionManager.Instance == null || !SessionManager.Instance.IsLoggedIn) return;
+
+        if (SessionManager.Instance.IsSelfStudy)
+            userInfoText.text = $"{SessionManager.Instance.DisplayName} (СЃР°РјРѕСЃС‚РѕСЏС‚РµР»СЊРЅРѕ)";
+        else
+            userInfoText.text = $"{SessionManager.Instance.DisplayName} ({SessionManager.Instance.Email})";
+
+        if (logoutButton != null)
+            logoutButton.gameObject.SetActive(!SessionManager.Instance.IsSelfStudy);
     }
 }
