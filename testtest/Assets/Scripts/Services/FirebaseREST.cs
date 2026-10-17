@@ -195,6 +195,60 @@ public class FirebaseREST : IFirebaseService
         }
     }
 
+    public Task<bool> SendPasswordReset(string email)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        coroutineRunner.StartCoroutine(PasswordResetCoroutine(email, tcs));
+        return tcs.Task;
+    }
+
+    private IEnumerator PasswordResetCoroutine(string email, TaskCompletionSource<bool> tcs)
+    {
+        string url = string.Format(AuthUrl, "sendOobCode");
+        string json = $"{{\"requestType\":\"PASSWORD_RESET\",\"email\":\"{email}\"}}";
+        using (var request = new UnityWebRequest(url, "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            yield return request.SendWebRequest();
+            tcs.SetResult(request.result == UnityWebRequest.Result.Success);
+        }
+    }
+
+    private IEnumerator RefreshTokenCoroutine()
+    {
+        if (string.IsNullOrEmpty(refreshToken)) yield break;
+        string url = $"https://securetoken.googleapis.com/v1/token?key={apiKey}";
+        string body = $"grant_type=refresh_token&refresh_token={refreshToken}";
+        using (var request = new UnityWebRequest(url, "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(body));
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            yield return request.SendWebRequest();
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                var resp = JsonUtility.FromJson<RefreshResponse>(request.downloadHandler.text);
+                idToken = resp.id_token;
+                refreshToken = resp.refresh_token;
+                Debug.Log("[FirebaseREST] Token refreshed");
+            }
+        }
+    }
+
+    private float tokenAge;
+    public void Update(float deltaTime)
+    {
+        if (string.IsNullOrEmpty(idToken)) return;
+        tokenAge += deltaTime;
+        if (tokenAge > 2700f)
+        {
+            tokenAge = 0;
+            coroutineRunner.StartCoroutine(RefreshTokenCoroutine());
+        }
+    }
+
     private string TranslateAuthError(string error)
     {
         switch (error)
@@ -213,4 +267,5 @@ public class FirebaseREST : IFirebaseService
     [Serializable] private class AuthResponse { public string idToken; public string refreshToken; public string localId; public string email; }
     [Serializable] private class AuthErrorResponse { public AuthError error; }
     [Serializable] private class AuthError { public string message; }
+    [Serializable] private class RefreshResponse { public string id_token; public string refresh_token; }
 }

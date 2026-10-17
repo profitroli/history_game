@@ -20,4 +20,5 @@ public interface IFirebaseService
     Task<bool> SetDocument(string collection, string documentId, Dictionary<string, object> data);
     Task<bool> UpdateDocument(string collection, string documentId, Dictionary<string, object> data);
     Task<List<Dictionary<string, object>>> QueryByField(string collection, string field, object value);
+    Task<bool> SendPasswordReset(string email);
 }

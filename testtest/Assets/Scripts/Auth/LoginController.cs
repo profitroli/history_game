@@ -36,6 +36,9 @@ public class LoginController : MonoBehaviour
     [SerializeField] private Button universityStudentButton;
     [SerializeField] private Button backFromRoleButton;
 
+    [Header("Доп. кнопки")]
+    [SerializeField] private Button forgotPasswordButton;
+
     void Start()
     {
         EnsureServices();
@@ -48,6 +51,7 @@ public class LoginController : MonoBehaviour
         if (schoolStudentButton != null) schoolStudentButton.onClick.AddListener(() => OnSelfStudyRole(UserRole.SchoolStudent));
         if (universityStudentButton != null) universityStudentButton.onClick.AddListener(() => OnSelfStudyRole(UserRole.UniversityStudent));
         if (backFromRoleButton != null) backFromRoleButton.onClick.AddListener(ShowLoginPanel);
+        if (forgotPasswordButton != null) forgotPasswordButton.onClick.AddListener(OnForgotPassword);
 
         ShowLoginPanel();
         CheckInviteLink();
@@ -93,6 +97,11 @@ public class LoginController : MonoBehaviour
         {
             var go = new GameObject("ProgressService");
             go.AddComponent<ProgressService>();
+        }
+        if (ToastManager.Instance == null)
+        {
+            var go = new GameObject("ToastManager");
+            go.AddComponent<ToastManager>();
         }
     }
 
@@ -269,6 +278,21 @@ public class LoginController : MonoBehaviour
                 SceneManager.LoadScene("MainMenu");
                 break;
         }
+    }
+
+    private async void OnForgotPassword()
+    {
+        string email = loginEmailInput?.text?.Trim();
+        if (string.IsNullOrEmpty(email))
+        {
+            ShowError(loginErrorText, "Введите email для сброса пароля");
+            return;
+        }
+        bool ok = await FirebaseManager.Instance.Service.SendPasswordReset(email);
+        if (ok)
+            ToastManager.Show("Письмо для сброса пароля отправлено на " + email);
+        else
+            ShowError(loginErrorText, "Не удалось отправить письмо");
     }
 
     private void ShowError(TMP_Text errorText, string message)

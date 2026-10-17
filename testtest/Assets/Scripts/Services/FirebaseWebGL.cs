@@ -37,4 +37,5 @@ public class FirebaseWebGL : IFirebaseService
     public Task<bool> SetDocument(string collection, string documentId, Dictionary<string, object> data) => REST.SetDocument(collection, documentId, data);
     public Task<bool> UpdateDocument(string collection, string documentId, Dictionary<string, object> data) => REST.UpdateDocument(collection, documentId, data);
     public Task<List<Dictionary<string, object>>> QueryByField(string collection, string field, object value) => REST.QueryByField(collection, field, value);
+    public Task<bool> SendPasswordReset(string email) => REST.SendPasswordReset(email);
 }

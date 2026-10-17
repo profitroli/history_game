@@ -33,4 +33,12 @@ public class FirebaseManager : MonoBehaviour
         Debug.Log("[FirebaseManager] REST режим (Editor/Desktop)");
 #endif
     }
+
+    void Update()
+    {
+#if !UNITY_WEBGL || UNITY_EDITOR
+        if (Service is FirebaseREST rest)
+            rest.Update(Time.deltaTime);
+#endif
+    }
 }
