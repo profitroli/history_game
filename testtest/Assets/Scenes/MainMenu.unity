@@ -1300,6 +1300,7 @@ GameObject:
   - component: {fileID: 1627954413}
   - component: {fileID: 1627954412}
   - component: {fileID: 1627954417}
+  - component: {fileID: 1627954418}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1435,6 +1436,18 @@ MonoBehaviour:
   fadeInDuration: 2
   startDelay: 0.5
   fadeBackground: 1
+--- !u!114 &1627954418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627954411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7807204dd6bfc1842af13753dcaf3129, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SessionGuard
 --- !u!1 &1768700681
 GameObject:
   m_ObjectHideFlags: 0

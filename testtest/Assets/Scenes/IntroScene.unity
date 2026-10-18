@@ -416,7 +416,7 @@ MonoBehaviour:
   skipButton: {fileID: 861906614}
   loadingText: {fileID: 0}
   skipButtonObject: {fileID: 644050094}
-  nextSceneName: MainMenu
+  nextSceneName: LoginScene
   skipDelay: 2
   allowSkip: 1
   fadeImage: {fileID: 0}
