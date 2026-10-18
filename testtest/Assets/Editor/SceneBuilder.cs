@@ -52,6 +52,38 @@ public static class SceneBuilder
         AddToBuildSettings();
     }
 
+    [MenuItem("Tools/Добавить панели/4 — MainMenu (прогресс + задания + аватар)")]
+    static void Menu_MainMenuPanels()
+    {
+        if (!EditorUtility.DisplayDialog("Scene Builder",
+            "Add StudentDashboard, AssignmentPlayer, Avatar panels to MainMenu?\nScene will be saved.", "Yes", "Cancel")) return;
+        AddPanelsToMainMenu();
+    }
+
+    [MenuItem("Tools/Добавить панели/5 — SettingsScene (профиль + выход)")]
+    static void Menu_SettingsPanels()
+    {
+        if (!EditorUtility.DisplayDialog("Scene Builder",
+            "Add Profile panel + logout to SettingsScene?\nScene will be saved.", "Yes", "Cancel")) return;
+        AddPanelsToSettings();
+    }
+
+    [MenuItem("Tools/Добавить панели/6 — TeacherDashboard (конструктор заданий)")]
+    static void Menu_TeacherAssignment()
+    {
+        if (!EditorUtility.DisplayDialog("Scene Builder",
+            "Add AssignmentBuilder panel to TeacherDashboardScene?\nScene will be saved.", "Yes", "Cancel")) return;
+        AddAssignmentBuilderToTeacher();
+    }
+
+    [MenuItem("Tools/Добавить панели/7 — LoginScene (забыл пароль)")]
+    static void Menu_LoginForgot()
+    {
+        if (!EditorUtility.DisplayDialog("Scene Builder",
+            "Add ForgotPassword button to LoginScene?\nScene will be saved.", "Yes", "Cancel")) return;
+        AddForgotPasswordToLogin();
+    }
+
     // ==================== LOGIN SCENE ====================
 
     static void BuildLoginScene()
@@ -309,6 +341,502 @@ public static class SceneBuilder
         EditorSceneManager.SaveScene(scene, "Assets/Scenes/TeacherDashboardScene.unity");
         Debug.Log("[SceneBuilder] TeacherDashboardScene created at Assets/Scenes/TeacherDashboardScene.unity");
         EditorUtility.DisplayDialog("Scene Builder", "TeacherDashboardScene created!\nAssets/Scenes/TeacherDashboardScene.unity", "OK");
+    }
+
+    // ============= ADD PANELS TO MAINMENU ==============
+
+    static void AddPanelsToMainMenu()
+    {
+        var scene = EditorSceneManager.OpenScene("Assets/Scenes/MainMenu.unity");
+        var canvas = Object.FindObjectOfType<Canvas>();
+        if (canvas == null) { Err("MainMenu: Canvas not found"); return; }
+
+        if (canvas.GetComponent<SessionGuard>() == null)
+            canvas.gameObject.AddComponent<SessionGuard>();
+
+        // ---- Bottom nav buttons ----
+        if (canvas.transform.Find("AuthNavPanel") == null)
+        {
+            var nav = MakeUIGO("AuthNavPanel", canvas.transform);
+            var navRT = RT(nav);
+            navRT.anchorMin = new Vector2(0.02f, 0.02f);
+            navRT.anchorMax = new Vector2(0.98f, 0.08f);
+            navRT.offsetMin = navRT.offsetMax = Vector2.zero;
+            var navLayout = nav.AddComponent<HorizontalLayoutGroup>();
+            navLayout.spacing = 12;
+            navLayout.padding = new RectOffset(10, 10, 5, 5);
+            navLayout.childAlignment = TextAnchor.MiddleCenter;
+            navLayout.childForceExpandWidth = false;
+            navLayout.childControlWidth = false;
+            navLayout.childControlHeight = true;
+
+            var btnProgress = MakeBtn(nav.transform, "MyProgressButton", "Мой прогресс", ColBlue, 180, 42);
+            var btnAssign = MakeBtn(nav.transform, "AssignmentsButton", "Задания", ColGreen, 140, 42);
+            var btnAvatar = MakeBtn(nav.transform, "AvatarButton", "Аватар", ColOrange, 120, 42);
+        }
+
+        // ---- Student Dashboard Panel ----
+        if (canvas.transform.Find("StudentDashboardPanel") == null)
+        {
+            var panel = MakePanel(canvas.transform, "StudentDashboardPanel", 0, 0);
+            Stretch(panel);
+            panel.GetComponent<Image>().color = new Color(0.1f, 0.12f, 0.16f, 0.96f);
+            var vlg = AddVLG(panel, 10, new RectOffset(60, 60, 40, 40));
+
+            var nameText = MakeTMP(panel.transform, "DashNameText", "", 28, TextAlignmentOptions.Center, Color.white);
+            nameText.gameObject.AddComponent<LayoutElement>().preferredHeight = 36;
+            var groupInfoText = MakeTMP(panel.transform, "DashGroupInfoText", "", 18, TextAlignmentOptions.Center, ColTextDim);
+            groupInfoText.gameObject.AddComponent<LayoutElement>().preferredHeight = 26;
+
+            // Spacer
+            var spacer1 = MakeUIGO("Spacer", panel.transform);
+            spacer1.AddComponent<LayoutElement>().preferredHeight = 10;
+
+            var lecturesProgressText = MakeTMP(panel.transform, "LecturesProgressText", "", 20, TextAlignmentOptions.Left, Color.white);
+            lecturesProgressText.gameObject.AddComponent<LayoutElement>().preferredHeight = 28;
+            var lecturesBar = MakeProgressBar(panel.transform, "LecturesBar");
+            var gamesProgressText = MakeTMP(panel.transform, "GamesProgressText", "", 20, TextAlignmentOptions.Left, Color.white);
+            gamesProgressText.gameObject.AddComponent<LayoutElement>().preferredHeight = 28;
+            var gamesBar = MakeProgressBar(panel.transform, "GamesBar");
+            var testsProgressText = MakeTMP(panel.transform, "TestsProgressText", "", 20, TextAlignmentOptions.Left, Color.white);
+            testsProgressText.gameObject.AddComponent<LayoutElement>().preferredHeight = 28;
+            var testsBar = MakeProgressBar(panel.transform, "TestsBar");
+
+            var averageScoreText = MakeTMP(panel.transform, "AverageScoreText", "", 20, TextAlignmentOptions.Center, Color.white);
+            averageScoreText.gameObject.AddComponent<LayoutElement>().preferredHeight = 30;
+            var readinessText = MakeTMP(panel.transform, "ReadinessText", "", 24, TextAlignmentOptions.Center, ColGreen);
+            readinessText.gameObject.AddComponent<LayoutElement>().preferredHeight = 34;
+
+            var closeButton = MakeBtn(panel.transform, "DashCloseButton", "Закрыть", ColGray, 0, 42);
+
+            var ctrl = panel.AddComponent<StudentDashboardController>();
+            var so = new SerializedObject(ctrl);
+            W(so, "nameText", nameText);
+            W(so, "groupInfoText", groupInfoText);
+            W(so, "lecturesProgressText", lecturesProgressText);
+            W(so, "gamesProgressText", gamesProgressText);
+            W(so, "testsProgressText", testsProgressText);
+            W(so, "averageScoreText", averageScoreText);
+            W(so, "readinessText", readinessText);
+            W(so, "lecturesBar", lecturesBar);
+            W(so, "gamesBar", gamesBar);
+            W(so, "testsBar", testsBar);
+            W(so, "closeButton", closeButton);
+            so.ApplyModifiedPropertiesWithoutUndo();
+            panel.SetActive(false);
+
+            // Wire nav button
+            var navPanel = canvas.transform.Find("AuthNavPanel");
+            if (navPanel != null)
+            {
+                var btn = navPanel.Find("MyProgressButton")?.GetComponent<Button>();
+                if (btn != null)
+                {
+                    var evt = new UnityEngine.Events.UnityEvent();
+                    UnityEditor.Events.UnityEventTools.AddBoolPersistentListener(
+                        btn.onClick, new UnityEngine.Events.UnityAction<bool>(panel.SetActive), true);
+                }
+            }
+        }
+
+        // ---- Assignment Player Panel ----
+        if (canvas.transform.Find("AssignmentPlayerPanel") == null)
+        {
+            var panel = MakePanel(canvas.transform, "AssignmentPlayerPanel", 0, 0);
+            Stretch(panel);
+            panel.GetComponent<Image>().color = new Color(0.1f, 0.12f, 0.16f, 0.96f);
+
+            // List sub-panel
+            var listPanel = MakeUIGO("ListPanel", panel.transform);
+            Stretch(listPanel);
+            var listVLG = AddVLG(listPanel, 10, new RectOffset(40, 40, 30, 30));
+
+            var listTitle = MakeTMP(listPanel.transform, "ListTitle", "Задания", 24, TextAlignmentOptions.Center, Color.white);
+            listTitle.gameObject.AddComponent<LayoutElement>().preferredHeight = 36;
+
+            var (listScroll, listContent) = MakeScroll(listPanel.transform, "ListScroll");
+            listScroll.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1;
+
+            var closeListButton = MakeBtn(listPanel.transform, "CloseListButton", "Закрыть", ColGray, 0, 42);
+
+            // Quiz sub-panel
+            var quizPanel = MakeUIGO("QuizPanel", panel.transform);
+            Stretch(quizPanel);
+            var qVLG = AddVLG(quizPanel, 15, new RectOffset(60, 60, 40, 40));
+
+            var questionNumberText = MakeTMP(quizPanel.transform, "QuestionNumberText", "", 16, TextAlignmentOptions.Center, ColTextDim);
+            questionNumberText.gameObject.AddComponent<LayoutElement>().preferredHeight = 24;
+            var questionText = MakeTMP(quizPanel.transform, "QuestionText", "", 22, TextAlignmentOptions.Center, Color.white);
+            questionText.gameObject.AddComponent<LayoutElement>().preferredHeight = 80;
+            questionText.overflowMode = TextOverflowModes.Overflow;
+
+            var spacerQ = MakeUIGO("Spacer", quizPanel.transform);
+            spacerQ.AddComponent<LayoutElement>().preferredHeight = 15;
+
+            var optA = MakeBtn(quizPanel.transform, "OptionAButton", "А)", ColBlue, 0, 50);
+            var optB = MakeBtn(quizPanel.transform, "OptionBButton", "Б)", ColBlue, 0, 50);
+            var optC = MakeBtn(quizPanel.transform, "OptionCButton", "В)", ColBlue, 0, 50);
+            var optD = MakeBtn(quizPanel.transform, "OptionDButton", "Г)", ColBlue, 0, 50);
+
+            var optAText = optA.GetComponentInChildren<TextMeshProUGUI>();
+            var optBText = optB.GetComponentInChildren<TextMeshProUGUI>();
+            var optCText = optC.GetComponentInChildren<TextMeshProUGUI>();
+            var optDText = optD.GetComponentInChildren<TextMeshProUGUI>();
+
+            quizPanel.SetActive(false);
+
+            // Result sub-panel
+            var resultPanel = MakeUIGO("ResultPanel", panel.transform);
+            Stretch(resultPanel);
+            var rVLG = AddVLG(resultPanel, 15, new RectOffset(60, 60, 100, 60));
+
+            var resultText = MakeTMP(resultPanel.transform, "ResultText", "", 24, TextAlignmentOptions.Center, Color.white);
+            resultText.gameObject.AddComponent<LayoutElement>().preferredHeight = 40;
+            var resultScoreText = MakeTMP(resultPanel.transform, "ResultScoreText", "", 36, TextAlignmentOptions.Center, ColGreen);
+            resultScoreText.gameObject.AddComponent<LayoutElement>().preferredHeight = 80;
+            var resultCloseButton = MakeBtn(resultPanel.transform, "ResultCloseButton", "К списку", ColGray, 0, 45);
+            resultPanel.SetActive(false);
+
+            // Wire controller
+            var ctrl = panel.AddComponent<AssignmentPlayerController>();
+            var so = new SerializedObject(ctrl);
+            W(so, "listPanel", listPanel);
+            W(so, "listContent", listContent);
+            W(so, "closeListButton", closeListButton);
+            W(so, "listTitle", listTitle);
+            W(so, "quizPanel", quizPanel);
+            W(so, "questionNumberText", questionNumberText);
+            W(so, "questionText", questionText);
+            W(so, "optionAButton", optA);
+            W(so, "optionBButton", optB);
+            W(so, "optionCButton", optC);
+            W(so, "optionDButton", optD);
+            W(so, "optionAText", optAText);
+            W(so, "optionBText", optBText);
+            W(so, "optionCText", optCText);
+            W(so, "optionDText", optDText);
+            W(so, "resultPanel", resultPanel);
+            W(so, "resultText", resultText);
+            W(so, "resultScoreText", resultScoreText);
+            W(so, "resultCloseButton", resultCloseButton);
+            so.ApplyModifiedPropertiesWithoutUndo();
+            panel.SetActive(false);
+        }
+
+        // ---- Avatar Panel ----
+        if (canvas.transform.Find("AvatarPanel") == null)
+        {
+            var panel = MakePanel(canvas.transform, "AvatarPanel", 0, 0);
+            Stretch(panel);
+            panel.GetComponent<Image>().color = new Color(0.1f, 0.12f, 0.16f, 0.96f);
+            var vlg = AddVLG(panel, 12, new RectOffset(40, 40, 30, 30));
+
+            var titleText = MakeTMP(panel.transform, "AvatarTitle", "Аватары", 26, TextAlignmentOptions.Center, Color.white);
+            titleText.gameObject.AddComponent<LayoutElement>().preferredHeight = 36;
+
+            // Selected avatar display row
+            var selRow = MakeUIGO("SelectedRow", panel.transform);
+            selRow.AddComponent<LayoutElement>().preferredHeight = 70;
+            var selLayout = selRow.AddComponent<HorizontalLayoutGroup>();
+            selLayout.spacing = 15;
+            selLayout.childAlignment = TextAnchor.MiddleCenter;
+            selLayout.childForceExpandWidth = false;
+            selLayout.childControlWidth = false;
+            selLayout.childControlHeight = true;
+
+            var selImgGO = MakeUIGO("SelectedImage", selRow.transform);
+            var selImg = selImgGO.AddComponent<Image>();
+            selImg.color = new Color(0.5f, 0.55f, 0.65f);
+            selImgGO.AddComponent<LayoutElement>().preferredWidth = 60;
+
+            var selName = MakeTMP(selRow.transform, "SelectedName", "Новичок", 20, TextAlignmentOptions.Left, Color.white);
+            SetSize(selName, 200, 30);
+
+            // Grid container
+            var gridGO = MakeUIGO("AvatarGrid", panel.transform);
+            var grid = gridGO.AddComponent<GridLayoutGroup>();
+            grid.cellSize = new Vector2(150, 190);
+            grid.spacing = new Vector2(15, 15);
+            grid.childAlignment = TextAnchor.MiddleCenter;
+            grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            grid.constraintCount = 3;
+            gridGO.AddComponent<LayoutElement>().flexibleHeight = 1;
+
+            var closeButton = MakeBtn(panel.transform, "AvatarCloseButton", "Закрыть", ColGray, 0, 42);
+
+            var ctrl = panel.AddComponent<AvatarController>();
+            var so = new SerializedObject(ctrl);
+            W(so, "avatarGrid", gridGO.transform);
+            W(so, "titleText", titleText);
+            W(so, "closeButton", closeButton);
+            W(so, "selectedAvatarImage", selImg);
+            W(so, "selectedAvatarName", selName);
+            so.ApplyModifiedPropertiesWithoutUndo();
+            panel.SetActive(false);
+        }
+
+        EditorSceneManager.SaveScene(scene);
+        EditorUtility.DisplayDialog("Scene Builder",
+            "MainMenu updated!\n- SessionGuard added\n- StudentDashboardPanel\n- AssignmentPlayerPanel\n- AvatarPanel\n- Navigation buttons", "OK");
+    }
+
+    // ============= ADD PANELS TO SETTINGS ==============
+
+    static void AddPanelsToSettings()
+    {
+        var scene = EditorSceneManager.OpenScene("Assets/Scenes/SettingsScene.unity");
+        var canvas = Object.FindObjectOfType<Canvas>();
+        if (canvas == null) { Err("SettingsScene: Canvas not found"); return; }
+
+        // Wire SettingsController logout + userInfo
+        var settingsCtrl = Object.FindObjectOfType<SettingsController>();
+        if (settingsCtrl != null)
+        {
+            var scSO = new SerializedObject(settingsCtrl);
+            if (scSO.FindProperty("logoutButton").objectReferenceValue == null)
+            {
+                // Add logout and info to settings
+                var logoutBtnGO = canvas.transform.Find("LogoutButton");
+                if (logoutBtnGO == null)
+                {
+                    var logoutBtn = MakeBtn(canvas.transform, "LogoutButton", "Выйти из аккаунта", ColRed, 280, 42);
+                    var lbRT = RT(logoutBtn);
+                    lbRT.anchorMin = new Vector2(0.5f, 0.12f);
+                    lbRT.anchorMax = new Vector2(0.5f, 0.12f);
+                    lbRT.anchoredPosition = Vector2.zero;
+                    W(scSO, "logoutButton", logoutBtn);
+                }
+
+                var userInfoGO = canvas.transform.Find("UserInfoText");
+                if (userInfoGO == null)
+                {
+                    var userInfo = MakeTMP(canvas.transform, "UserInfoText", "", 16, TextAlignmentOptions.Center, ColTextDim);
+                    var uiRT = RT(userInfo);
+                    uiRT.anchorMin = new Vector2(0.1f, 0.06f);
+                    uiRT.anchorMax = new Vector2(0.9f, 0.10f);
+                    uiRT.offsetMin = uiRT.offsetMax = Vector2.zero;
+                    W(scSO, "userInfoText", userInfo);
+                }
+                scSO.ApplyModifiedPropertiesWithoutUndo();
+            }
+        }
+
+        // ---- Profile Panel ----
+        if (canvas.transform.Find("ProfilePanel") == null)
+        {
+            var panel = MakePanel(canvas.transform, "ProfilePanel", 500, 550);
+            Center(panel);
+            var vlg = AddVLG(panel, 10, new RectOffset(30, 30, 25, 20));
+
+            MakeTMP(panel.transform, "Title", "Профиль", 24, TextAlignmentOptions.Center, Color.white)
+                .gameObject.AddComponent<LayoutElement>().preferredHeight = 34;
+
+            var nameText = MakeTMP(panel.transform, "ProfileNameText", "", 20, TextAlignmentOptions.Left, Color.white);
+            nameText.gameObject.AddComponent<LayoutElement>().preferredHeight = 28;
+            var emailText = MakeTMP(panel.transform, "ProfileEmailText", "", 16, TextAlignmentOptions.Left, ColTextDim);
+            emailText.gameObject.AddComponent<LayoutElement>().preferredHeight = 24;
+            var roleText = MakeTMP(panel.transform, "ProfileRoleText", "", 16, TextAlignmentOptions.Left, ColTextDim);
+            roleText.gameObject.AddComponent<LayoutElement>().preferredHeight = 24;
+            var groupText = MakeTMP(panel.transform, "ProfileGroupText", "", 16, TextAlignmentOptions.Left, ColTextDim);
+            groupText.gameObject.AddComponent<LayoutElement>().preferredHeight = 24;
+            var statsText = MakeTMP(panel.transform, "ProfileStatsText", "", 16, TextAlignmentOptions.Left, ColTextDim);
+            statsText.gameObject.AddComponent<LayoutElement>().preferredHeight = 24;
+
+            var nameInput = MakeInputField(panel.transform, "ProfileNameInput", "Новое имя", 42);
+            var saveNameButton = MakeBtn(panel.transform, "SaveNameButton", "Сохранить имя", ColBlue, 0, 40);
+            var joinGroupButton = MakeBtn(panel.transform, "JoinGroupButton", "Ввести код группы", ColGreen, 0, 40);
+            var logoutButton = MakeBtn(panel.transform, "ProfileLogoutButton", "Выйти", ColRed, 0, 40);
+
+            // JoinGroupPanel
+            var joinGroupPanel = MakePanel(panel.transform, "JoinGroupPanel", 0, 0);
+            joinGroupPanel.GetComponent<Image>().color = new Color(0.15f, 0.18f, 0.24f);
+            var jgVLG = AddVLG(joinGroupPanel, 8, new RectOffset(15, 15, 12, 12));
+            joinGroupPanel.AddComponent<LayoutElement>().preferredHeight = 180;
+
+            var codeInput = MakeInputField(joinGroupPanel.transform, "JoinCodeInput", "Код группы (6 символов)", 42);
+            var joinButton = MakeBtn(joinGroupPanel.transform, "JoinButton", "Присоединиться", ColGreen, 0, 40);
+            var cancelButton = MakeBtn(joinGroupPanel.transform, "CancelJoinButton", "Отмена", ColGray, 0, 36);
+            var statusText = MakeTMP(joinGroupPanel.transform, "JoinStatusText", "", 15, TextAlignmentOptions.Center, ColError);
+            statusText.gameObject.AddComponent<LayoutElement>().preferredHeight = 22;
+            var groupInfoTextJ = MakeTMP(joinGroupPanel.transform, "JoinGroupInfoText", "", 14, TextAlignmentOptions.Center, ColGreen);
+            groupInfoTextJ.gameObject.AddComponent<LayoutElement>().preferredHeight = 22;
+
+            var jgCtrl = joinGroupPanel.AddComponent<JoinGroupController>();
+            var jgSO = new SerializedObject(jgCtrl);
+            W(jgSO, "codeInput", codeInput);
+            W(jgSO, "joinButton", joinButton);
+            W(jgSO, "cancelButton", cancelButton);
+            W(jgSO, "statusText", statusText);
+            W(jgSO, "groupInfoText", groupInfoTextJ);
+            jgSO.ApplyModifiedPropertiesWithoutUndo();
+            joinGroupPanel.SetActive(false);
+
+            var profCtrl = panel.AddComponent<ProfileController>();
+            var pSO = new SerializedObject(profCtrl);
+            W(pSO, "nameText", nameText);
+            W(pSO, "emailText", emailText);
+            W(pSO, "roleText", roleText);
+            W(pSO, "groupText", groupText);
+            W(pSO, "statsText", statsText);
+            W(pSO, "nameInput", nameInput);
+            W(pSO, "saveNameButton", saveNameButton);
+            W(pSO, "logoutButton", logoutButton);
+            W(pSO, "joinGroupButton", joinGroupButton);
+            W(pSO, "joinGroupPanel", joinGroupPanel);
+            pSO.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        EditorSceneManager.SaveScene(scene);
+        EditorUtility.DisplayDialog("Scene Builder",
+            "SettingsScene updated!\n- ProfilePanel + JoinGroupPanel\n- Logout button + user info", "OK");
+    }
+
+    // ========= ADD ASSIGNMENT BUILDER TO TEACHER =========
+
+    static void AddAssignmentBuilderToTeacher()
+    {
+        var scene = EditorSceneManager.OpenScene("Assets/Scenes/TeacherDashboardScene.unity");
+        var canvas = Object.FindObjectOfType<Canvas>();
+        if (canvas == null) { Err("TeacherDashboard: Canvas not found"); return; }
+
+        if (canvas.transform.Find("AssignmentBuilderPanel") != null)
+        {
+            EditorUtility.DisplayDialog("Scene Builder", "AssignmentBuilderPanel already exists.", "OK");
+            return;
+        }
+
+        var panel = MakePanel(canvas.transform, "AssignmentBuilderPanel", 0, 0);
+        Stretch(panel);
+        panel.GetComponent<Image>().color = new Color(0.1f, 0.12f, 0.16f, 0.96f);
+
+        // List sub-panel
+        var listPanel = MakeUIGO("AssignmentListPanel", panel.transform);
+        Stretch(listPanel);
+        var lVLG = AddVLG(listPanel, 10, new RectOffset(40, 40, 30, 30));
+
+        var listTitle = MakeTMP(listPanel.transform, "AssignmentListTitle", "Задания", 24, TextAlignmentOptions.Center, Color.white);
+        listTitle.gameObject.AddComponent<LayoutElement>().preferredHeight = 36;
+
+        var (listScroll, listContent) = MakeScroll(listPanel.transform, "AssignmentScroll");
+        listScroll.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1;
+
+        var btnRow = MakeUIGO("BtnRow", listPanel.transform);
+        btnRow.AddComponent<LayoutElement>().preferredHeight = 45;
+        var brLayout = btnRow.AddComponent<HorizontalLayoutGroup>();
+        brLayout.spacing = 12;
+        brLayout.childAlignment = TextAnchor.MiddleCenter;
+        brLayout.childForceExpandWidth = false;
+        brLayout.childControlWidth = false;
+        brLayout.childControlHeight = true;
+
+        var newAssignmentButton = MakeBtn(btnRow.transform, "NewAssignmentButton", "+ Новое задание", ColGreen, 220, 42);
+        var backButton = MakeBtn(btnRow.transform, "BackFromAssignments", "Назад", ColGray, 120, 42);
+
+        // Editor sub-panel
+        var editorPanel = MakeUIGO("EditorPanel", panel.transform);
+        Stretch(editorPanel);
+        var eVLG = AddVLG(editorPanel, 10, new RectOffset(40, 40, 25, 25));
+
+        MakeTMP(editorPanel.transform, "EditorTitle", "Редактор задания", 22, TextAlignmentOptions.Center, Color.white)
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
+
+        var assignmentNameInput = MakeInputField(editorPanel.transform, "AssignmentNameInput", "Название задания", 42);
+
+        var (questionsScroll, questionsContent) = MakeScroll(editorPanel.transform, "QuestionsScroll");
+        questionsScroll.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1;
+
+        var editorStatusText = MakeTMP(editorPanel.transform, "EditorStatusText", "", 15, TextAlignmentOptions.Center, ColError);
+        editorStatusText.gameObject.AddComponent<LayoutElement>().preferredHeight = 24;
+
+        var eBtnRow = MakeUIGO("EditorBtnRow", editorPanel.transform);
+        eBtnRow.AddComponent<LayoutElement>().preferredHeight = 45;
+        var ebLayout = eBtnRow.AddComponent<HorizontalLayoutGroup>();
+        ebLayout.spacing = 12;
+        ebLayout.childAlignment = TextAnchor.MiddleCenter;
+        ebLayout.childForceExpandWidth = false;
+        ebLayout.childControlWidth = false;
+        ebLayout.childControlHeight = true;
+
+        var addQuestionButton = MakeBtn(eBtnRow.transform, "AddQuestionButton", "+ Вопрос", ColBlue, 150, 40);
+        var saveAssignmentButton = MakeBtn(eBtnRow.transform, "SaveAssignmentButton", "Сохранить", ColGreen, 150, 40);
+        var cancelEditorButton = MakeBtn(eBtnRow.transform, "CancelEditorButton", "Отмена", ColGray, 120, 40);
+
+        editorPanel.SetActive(false);
+
+        // Wire controller
+        var ctrl = panel.AddComponent<AssignmentBuilderController>();
+        var so = new SerializedObject(ctrl);
+        W(so, "assignmentListPanel", listPanel);
+        W(so, "assignmentListContent", listContent);
+        W(so, "newAssignmentButton", newAssignmentButton);
+        W(so, "backButton", backButton);
+        W(so, "assignmentListTitle", listTitle);
+        W(so, "editorPanel", editorPanel);
+        W(so, "assignmentNameInput", assignmentNameInput);
+        W(so, "questionsContent", questionsContent);
+        W(so, "addQuestionButton", addQuestionButton);
+        W(so, "saveAssignmentButton", saveAssignmentButton);
+        W(so, "cancelEditorButton", cancelEditorButton);
+        W(so, "editorStatusText", editorStatusText);
+        so.ApplyModifiedPropertiesWithoutUndo();
+        panel.SetActive(false);
+
+        EditorSceneManager.SaveScene(scene);
+        EditorUtility.DisplayDialog("Scene Builder",
+            "TeacherDashboard updated!\n- AssignmentBuilderPanel added", "OK");
+    }
+
+    // ========== ADD FORGOT PASSWORD TO LOGIN ==========
+
+    static void AddForgotPasswordToLogin()
+    {
+        var scene = EditorSceneManager.OpenScene("Assets/Scenes/LoginScene.unity");
+        var canvas = Object.FindObjectOfType<Canvas>();
+        if (canvas == null) { Err("LoginScene: Canvas not found"); return; }
+
+        var loginCtrl = canvas.GetComponent<LoginController>();
+        if (loginCtrl == null) { Err("LoginScene: LoginController not found"); return; }
+
+        var loginPanel = canvas.transform.Find("LoginPanel");
+        if (loginPanel == null) { Err("LoginScene: LoginPanel not found"); return; }
+
+        if (loginPanel.Find("ForgotPasswordButton") != null)
+        {
+            EditorUtility.DisplayDialog("Scene Builder", "ForgotPassword button already exists.", "OK");
+            return;
+        }
+
+        var forgotBtn = MakeBtn(loginPanel, "ForgotPasswordButton", "Забыл пароль?", ColGray, 0, 35);
+        var forgotTxt = forgotBtn.GetComponentInChildren<TextMeshProUGUI>();
+        if (forgotTxt != null) forgotTxt.fontSize = 14;
+
+        var so = new SerializedObject(loginCtrl);
+        W(so, "forgotPasswordButton", forgotBtn);
+        so.ApplyModifiedPropertiesWithoutUndo();
+
+        EditorSceneManager.SaveScene(scene);
+        EditorUtility.DisplayDialog("Scene Builder",
+            "LoginScene updated!\n- ForgotPassword button added", "OK");
+    }
+
+    // ============= HELPER: progress bar ==============
+
+    static Image MakeProgressBar(Transform parent, string name)
+    {
+        var go = MakeUIGO(name, parent);
+        var img = go.AddComponent<Image>();
+        img.color = new Color(0.22f, 0.75f, 0.35f);
+        img.type = Image.Type.Filled;
+        img.fillMethod = Image.FillMethod.Horizontal;
+        img.fillAmount = 0;
+        go.AddComponent<LayoutElement>().preferredHeight = 14;
+        return img;
+    }
+
+    static void Err(string msg)
+    {
+        Debug.LogError($"[SceneBuilder] {msg}");
+        EditorUtility.DisplayDialog("Scene Builder Error", msg, "OK");
     }
 
     // ================== BUILD SETTINGS ==================
