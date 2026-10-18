@@ -39,6 +39,10 @@ public class TeacherDashboardController : MonoBehaviour
     [Header("Создание группы — доп. поля")]
     [SerializeField] private TMP_InputField institutionInput;
 
+    [Header("Конструктор заданий")]
+    [SerializeField] private Button assignmentsButton;
+    [SerializeField] private AssignmentBuilderController assignmentBuilder;
+
     private List<GroupData> groups = new List<GroupData>();
     private List<UserData> currentStudents = new List<UserData>();
     private List<ProgressData> currentProgressList = new List<ProgressData>();
@@ -177,6 +181,17 @@ public class TeacherDashboardController : MonoBehaviour
         if (groupDetailName != null) groupDetailName.text = group.name;
         if (groupDetailCode != null) groupDetailCode.text = $"Код: {group.code}";
         if (groupDetailProgram != null) groupDetailProgram.text = group.IsSchool ? "Школьная программа" : "Студенческая программа";
+
+        if (assignmentsButton != null)
+        {
+            assignmentsButton.onClick.RemoveAllListeners();
+            string gId = groupId;
+            string gName = group.name;
+            assignmentsButton.onClick.AddListener(() =>
+            {
+                if (assignmentBuilder != null) assignmentBuilder.Show(gId, gName);
+            });
+        }
 
         await LoadStudents(groupId);
     }

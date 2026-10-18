@@ -781,9 +781,27 @@ public static class SceneBuilder
         so.ApplyModifiedPropertiesWithoutUndo();
         panel.SetActive(false);
 
+        // Add "Задания" button inside GroupDetailPanel's ButtonRow
+        var teacherCtrl = canvas.GetComponent<TeacherDashboardController>();
+        var groupDetailPanel = canvas.transform.Find("GroupDetailPanel");
+        if (groupDetailPanel != null && teacherCtrl != null)
+        {
+            var buttonRow = groupDetailPanel.Find("ButtonRow");
+            if (buttonRow != null)
+            {
+                var assignBtn = MakeBtn(buttonRow, "AssignmentsButton",
+                    "Задания", ColOrange, 130, 38);
+
+                var tso = new SerializedObject(teacherCtrl);
+                W(tso, "assignmentsButton", assignBtn);
+                W(tso, "assignmentBuilder", ctrl);
+                tso.ApplyModifiedPropertiesWithoutUndo();
+            }
+        }
+
         EditorSceneManager.SaveScene(scene);
         EditorUtility.DisplayDialog("Scene Builder",
-            "TeacherDashboard updated!\n- AssignmentBuilderPanel added", "OK");
+            "TeacherDashboard updated!\n- AssignmentBuilderPanel\n- Кнопка «Задания» в просмотре группы", "OK");
     }
 
     // ========== ADD FORGOT PASSWORD TO LOGIN ==========
