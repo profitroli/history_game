@@ -22,8 +22,11 @@ public class AvatarController : MonoBehaviour
 
     void OnEnable()
     {
-        if (closeButton != null) closeButton.onClick.RemoveAllListeners();
-        if (closeButton != null) closeButton.onClick.AddListener(() => gameObject.SetActive(false));
+        if (closeButton != null)
+        {
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(Close);
+        }
         BuildGrid();
         UpdateSelectedDisplay();
     }
@@ -157,6 +160,13 @@ public class AvatarController : MonoBehaviour
         }
         if (selectedAvatarName != null)
             selectedAvatarName.text = AvatarConfig.Names[selected];
+    }
+
+    private void Close()
+    {
+        gameObject.SetActive(false);
+        var uiCtrl = Object.FindFirstObjectByType<MainMenuUIController>();
+        if (uiCtrl != null) uiCtrl.ReturnToProfile();
     }
 
     public static void ShowNewUnlockNotification()

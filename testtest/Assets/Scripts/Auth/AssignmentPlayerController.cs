@@ -39,7 +39,7 @@ public class AssignmentPlayerController : MonoBehaviour
 
     void Start()
     {
-        if (closeListButton != null) closeListButton.onClick.AddListener(() => gameObject.SetActive(false));
+        if (closeListButton != null) closeListButton.onClick.AddListener(CloseAndReturnToProfile);
         if (resultCloseButton != null) resultCloseButton.onClick.AddListener(ShowList);
 
         if (optionAButton != null) optionAButton.onClick.AddListener(() => OnAnswer(0));
@@ -245,6 +245,13 @@ public class AssignmentPlayerController : MonoBehaviour
         if (optionBButton != null) optionBButton.interactable = e;
         if (optionCButton != null) optionCButton.interactable = e;
         if (optionDButton != null) optionDButton.interactable = e;
+    }
+
+    private void CloseAndReturnToProfile()
+    {
+        gameObject.SetActive(false);
+        var uiCtrl = Object.FindFirstObjectByType<MainMenuUIController>();
+        if (uiCtrl != null) uiCtrl.ReturnToProfile();
     }
 
     private Button GetButton(int idx)
