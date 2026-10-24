@@ -9853,6 +9853,7 @@ GameObject:
   - component: {fileID: 1627954417}
   - component: {fileID: 1627954418}
   - component: {fileID: 1627954419}
+  - component: {fileID: 1627954420}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -9877,8 +9878,8 @@ MonoBehaviour:
   miniGamesButton: {fileID: 444631060}
   preparationButton: {fileID: 1768700683}
   exitButton: {fileID: 858423292}
-  settingsButton: {fileID: 0}
-  menuCanvasGroup: {fileID: 0}
+  settingsButton: {fileID: 2066555203}
+  menuCanvasGroup: {fileID: 1627954420}
   lecturesSceneName: LecturesScene
   miniGamesSceneName: GamesScene
   preparationSceneName: PreparationScene
@@ -10032,6 +10033,18 @@ MonoBehaviour:
   profileRoleText: {fileID: 0}
   profileGroupText: {fileID: 1951859033}
   profileAvatarImage: {fileID: 629268378}
+--- !u!225 &1627954420
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627954411}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1645280858
 GameObject:
   m_ObjectHideFlags: 0
