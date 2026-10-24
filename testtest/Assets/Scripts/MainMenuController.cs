@@ -63,6 +63,7 @@ public class MainMenuController : MonoBehaviour
         }
 
         InitializeButtons();
+        WireSectionCards();
     }
 
     IEnumerator ShowMenuWithFade()
@@ -310,6 +311,35 @@ public class MainMenuController : MonoBehaviour
         textRect.offsetMax = new Vector2(-10, -10);
 
         Destroy(errorObj, 3f);
+    }
+
+    private void WireSectionCards()
+    {
+        Canvas canvasObj = GetComponentInParent<Canvas>();
+        if (canvasObj == null) canvasObj = FindObjectOfType<Canvas>();
+        if (canvasObj == null) return;
+
+        var sectionsPanel = canvasObj.transform.Find("SectionsPanel");
+        if (sectionsPanel == null) return;
+        var cardsRow = sectionsPanel.Find("CardsRow");
+        if (cardsRow == null) return;
+
+        System.Action[] actions = { LoadLecturesScene, LoadMiniGamesScene, LoadPreparationScene, OpenProfilePanel };
+
+        for (int i = 0; i < cardsRow.childCount && i < actions.Length; i++)
+        {
+            var card = cardsRow.GetChild(i);
+            var btn = card.GetComponentInChildren<Button>();
+            if (btn == null) continue;
+            int idx = i;
+            btn.onClick.AddListener(() => actions[idx]());
+        }
+    }
+
+    private void OpenProfilePanel()
+    {
+        var uiController = FindObjectOfType<MainMenuUIController>();
+        if (uiController != null) uiController.OpenProfile();
     }
 
     private void OnExitClick()

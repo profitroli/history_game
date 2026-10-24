@@ -58,7 +58,7 @@ public class TeacherDashboardController : MonoBehaviour
         }
 
         if (headerText != null)
-            headerText.text = $"Кабинет преподавателя — {SessionManager.Instance.DisplayName}";
+            headerText.text = "ПАНЕЛЬ УЧИТЕЛЯ";
 
         if (createGroupButton != null) createGroupButton.onClick.AddListener(ShowCreateGroupPanel);
         if (logoutButton != null) logoutButton.onClick.AddListener(Logout);
@@ -71,8 +71,46 @@ public class TeacherDashboardController : MonoBehaviour
         if (archiveGroupButton != null) archiveGroupButton.onClick.AddListener(ArchiveSelectedGroup);
         if (showArchivedToggle != null) showArchivedToggle.onValueChanged.AddListener(OnShowArchivedChanged);
 
+        WireActionCards();
         HideAllPanels();
         LoadGroups();
+    }
+
+    private void WireActionCards()
+    {
+        var canvas = GetComponentInParent<Canvas>();
+        if (canvas == null) return;
+        var cardsRow = canvas.transform.Find("ActionCardsRow");
+        if (cardsRow == null) return;
+
+        for (int i = 0; i < cardsRow.childCount; i++)
+        {
+            var card = cardsRow.GetChild(i);
+            var btn = card.GetComponentInChildren<Button>();
+            if (btn == null) continue;
+
+            int idx = i;
+            btn.onClick.AddListener(() => OnActionCardClicked(idx));
+        }
+    }
+
+    private void OnActionCardClicked(int cardIndex)
+    {
+        switch (cardIndex)
+        {
+            case 0: break;
+            case 1:
+                if (assignmentBuilder != null)
+                {
+                    if (groups.Count > 0)
+                        assignmentBuilder.Show(groups[0].groupId, groups[0].name);
+                    else
+                        ToastManager.Show("Сначала создайте группу");
+                }
+                break;
+            case 2: ShowCreateGroupPanel(); break;
+            case 3: PreviewAsStudent(); break;
+        }
     }
 
     private async void LoadGroups()
