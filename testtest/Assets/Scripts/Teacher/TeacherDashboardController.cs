@@ -98,7 +98,12 @@ public class TeacherDashboardController : MonoBehaviour
     {
         switch (cardIndex)
         {
-            case 0: break;
+            case 0:
+                if (groups.Count > 0)
+                    ShowGroupDetail(groups[0].groupId);
+                else
+                    ToastManager.Show("Сначала создайте группу");
+                break;
             case 1:
                 if (assignmentBuilder != null)
                 {
@@ -106,6 +111,10 @@ public class TeacherDashboardController : MonoBehaviour
                         assignmentBuilder.Show(groups[0].groupId, groups[0].name);
                     else
                         ToastManager.Show("Сначала создайте группу");
+                }
+                else
+                {
+                    ToastManager.Show("Конструктор заданий не найден");
                 }
                 break;
             case 2: ShowCreateGroupPanel(); break;

@@ -19,6 +19,13 @@ public class MainMenuUIController : MonoBehaviour
     [SerializeField] private Button closeProfileButton;
     [SerializeField] private Button logoutButton;
 
+    [Header("Закрытие панелей")]
+    [SerializeField] private Button avatarCloseButton;
+    [SerializeField] private Button assignmentCloseButton;
+
+    [Header("Возврат учителя")]
+    [SerializeField] private Button backToTeacherButton;
+
     [Header("Профиль — инфо")]
     [SerializeField] private TMP_Text profileNameText;
     [SerializeField] private TMP_Text profileEmailText;
@@ -33,6 +40,15 @@ public class MainMenuUIController : MonoBehaviour
         if (openAssignmentsButton != null) openAssignmentsButton.onClick.AddListener(OpenAssignmentsFromProfile);
         if (closeProfileButton != null) closeProfileButton.onClick.AddListener(CloseAll);
         if (logoutButton != null) logoutButton.onClick.AddListener(OnLogout);
+        if (avatarCloseButton != null) avatarCloseButton.onClick.AddListener(ReturnToProfile);
+        if (assignmentCloseButton != null) assignmentCloseButton.onClick.AddListener(ReturnToProfile);
+
+        if (backToTeacherButton != null)
+        {
+            bool isTeacher = SessionManager.Instance != null && SessionManager.Instance.IsTeacher;
+            backToTeacherButton.gameObject.SetActive(isTeacher);
+            if (isTeacher) backToTeacherButton.onClick.AddListener(BackToTeacherDashboard);
+        }
 
         HideAll();
         UpdateProfileButtonIcon();
@@ -133,6 +149,11 @@ public class MainMenuUIController : MonoBehaviour
         var doc = await FirebaseManager.Instance.Service.GetDocument("groups", gid);
         if (doc != null && doc.ContainsKey("name"))
             profileGroupText.text = "Группа: " + doc["name"];
+    }
+
+    private void BackToTeacherDashboard()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("TeacherDashboardScene");
     }
 
     private void OnLogout()
