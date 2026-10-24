@@ -39,26 +39,49 @@ public class AssignmentBuilderController : MonoBehaviour
 
     public void Show(string groupId, string groupName)
     {
+        Debug.Log($"[AssignmentBuilder] Show called for group={groupName} id={groupId}");
         currentGroupId = groupId;
         currentGroupName = groupName;
         gameObject.SetActive(true);
 
         if (assignmentListPanel != null) assignmentListPanel.SetActive(true);
+        else Debug.LogWarning("[AssignmentBuilder] assignmentListPanel is NULL");
         if (editorPanel != null) editorPanel.SetActive(false);
+        else Debug.LogWarning("[AssignmentBuilder] editorPanel is NULL");
 
         if (assignmentListTitle != null)
             assignmentListTitle.text = $"Задания: {groupName}";
 
-        if (newAssignmentButton != null) newAssignmentButton.onClick.RemoveAllListeners();
-        if (newAssignmentButton != null) newAssignmentButton.onClick.AddListener(ShowEditor);
-        if (backButton != null) backButton.onClick.RemoveAllListeners();
-        if (backButton != null) backButton.onClick.AddListener(Hide);
-        if (addQuestionButton != null) addQuestionButton.onClick.RemoveAllListeners();
-        if (addQuestionButton != null) addQuestionButton.onClick.AddListener(AddQuestionRow);
-        if (saveAssignmentButton != null) saveAssignmentButton.onClick.RemoveAllListeners();
-        if (saveAssignmentButton != null) saveAssignmentButton.onClick.AddListener(OnSave);
-        if (cancelEditorButton != null) cancelEditorButton.onClick.RemoveAllListeners();
-        if (cancelEditorButton != null) cancelEditorButton.onClick.AddListener(HideEditor);
+        if (newAssignmentButton != null)
+        {
+            newAssignmentButton.onClick.RemoveAllListeners();
+            newAssignmentButton.onClick.AddListener(ShowEditor);
+            Debug.Log("[AssignmentBuilder] newAssignmentButton wired");
+        }
+        else Debug.LogWarning("[AssignmentBuilder] newAssignmentButton is NULL");
+
+        if (backButton != null)
+        {
+            backButton.onClick.RemoveAllListeners();
+            backButton.onClick.AddListener(Hide);
+        }
+        if (addQuestionButton != null)
+        {
+            addQuestionButton.onClick.RemoveAllListeners();
+            addQuestionButton.onClick.AddListener(AddQuestionRow);
+        }
+        else Debug.LogWarning("[AssignmentBuilder] addQuestionButton is NULL");
+        if (saveAssignmentButton != null)
+        {
+            saveAssignmentButton.onClick.RemoveAllListeners();
+            saveAssignmentButton.onClick.AddListener(OnSave);
+        }
+        else Debug.LogWarning("[AssignmentBuilder] saveAssignmentButton is NULL");
+        if (cancelEditorButton != null)
+        {
+            cancelEditorButton.onClick.RemoveAllListeners();
+            cancelEditorButton.onClick.AddListener(HideEditor);
+        }
 
         LoadAssignments();
     }
@@ -158,12 +181,18 @@ public class AssignmentBuilderController : MonoBehaviour
 
     private void ShowEditor()
     {
+        Debug.Log("[AssignmentBuilder] ShowEditor called");
         if (assignmentListPanel != null) assignmentListPanel.SetActive(false);
-        if (editorPanel != null) editorPanel.SetActive(true);
+        if (editorPanel != null)
+        {
+            editorPanel.SetActive(true);
+            Debug.Log("[AssignmentBuilder] editorPanel activated");
+        }
         if (assignmentNameInput != null) assignmentNameInput.text = "";
         if (editorStatusText != null) editorStatusText.text = "";
         ClearQuestionRows();
         AddQuestionRow();
+        Debug.Log($"[AssignmentBuilder] Editor shown, questions={questionEntries.Count}, questionsContent={(questionsContent != null ? "SET" : "NULL")}");
     }
 
     private void HideEditor()
@@ -182,8 +211,13 @@ public class AssignmentBuilderController : MonoBehaviour
 
     private void AddQuestionRow()
     {
-        if (questionsContent == null) return;
+        if (questionsContent == null)
+        {
+            Debug.LogError("[AssignmentBuilder] questionsContent is NULL, cannot add question row!");
+            return;
+        }
         int idx = questionEntries.Count;
+        Debug.Log($"[AssignmentBuilder] AddQuestionRow idx={idx}");
 
         var go = new GameObject($"Question_{idx}");
         go.transform.SetParent(questionsContent, false);
