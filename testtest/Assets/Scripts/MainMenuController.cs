@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
@@ -276,7 +276,8 @@ public class MainMenuController : MonoBehaviour
     private void ShowErrorMessage(string message)
     {
         GameObject errorObj = new GameObject("ErrorMessage");
-        Canvas canvas = FindObjectOfType<Canvas>();
+        var canvasGo = GameObject.Find("Canvas");
+        Canvas canvas = canvasGo != null ? canvasGo.GetComponent<Canvas>() : FindObjectOfType<Canvas>();
 
         if (canvas != null)
         {
@@ -316,13 +317,19 @@ public class MainMenuController : MonoBehaviour
     private void WireSectionCards()
     {
         Canvas canvasObj = GetComponentInParent<Canvas>();
+        if (canvasObj == null)
+        {
+            var go = GameObject.Find("Canvas");
+            if (go != null) canvasObj = go.GetComponent<Canvas>();
+        }
         if (canvasObj == null) canvasObj = FindObjectOfType<Canvas>();
         if (canvasObj == null) return;
 
         var contentArea = canvasObj.transform.Find("ContentArea");
         if (contentArea == null) contentArea = canvasObj.transform.Find("SectionsPanel");
         if (contentArea == null) return;
-        var cardsRow = contentArea.Find("CardsRow");
+        var homeView = contentArea.Find("HomeView");
+        var cardsRow = homeView != null ? homeView.Find("CardsRow") : contentArea.Find("CardsRow");
         if (cardsRow == null) return;
 
         System.Action[] actions = { LoadLecturesScene, LoadMiniGamesScene, LoadPreparationScene, OpenProfilePanel };

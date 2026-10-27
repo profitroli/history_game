@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -43,6 +43,30 @@ public class TeacherDashboardController : MonoBehaviour
     [SerializeField] private Button assignmentsButton;
     [SerializeField] private AssignmentBuilderController assignmentBuilder;
 
+    [Header("Сайдбар")]
+    [SerializeField] private TMP_Text sidebarNameText;
+    [SerializeField] private TMP_Text sidebarRoleText;
+    [SerializeField] private Image sidebarAvatarImage;
+    [SerializeField] private Button navHomeButton;
+    [SerializeField] private Button navDataButton;
+    [SerializeField] private Button navGroupsButton;
+    [SerializeField] private Button navAssignmentsButton;
+    [SerializeField] private Button navSettingsButton;
+    [SerializeField] private Button navExitButton;
+
+    [Header("Подсветка навигации")]
+    [SerializeField] private Image navHomeHighlight;
+    [SerializeField] private Image navDataHighlight;
+    [SerializeField] private Image navGroupsHighlight;
+    [SerializeField] private Image navAssignmentsHighlight;
+    [SerializeField] private Image navSettingsHighlight;
+
+    [Header("Виды контента")]
+    [SerializeField] private GameObject homeView;
+
+    private static readonly Color NavActive = new Color(0.30f, 0.50f, 0.22f, 1f);
+    private static readonly Color NavInactive = new Color(0f, 0f, 0f, 0f);
+
     private List<GroupData> groups = new List<GroupData>();
     private List<UserData> currentStudents = new List<UserData>();
     private List<ProgressData> currentProgressList = new List<ProgressData>();
@@ -71,8 +95,18 @@ public class TeacherDashboardController : MonoBehaviour
         if (archiveGroupButton != null) archiveGroupButton.onClick.AddListener(ArchiveSelectedGroup);
         if (showArchivedToggle != null) showArchivedToggle.onValueChanged.AddListener(OnShowArchivedChanged);
 
+        WireSidebarFromScene();
+
+        if (navHomeButton != null) navHomeButton.onClick.AddListener(ShowHome);
+        if (navDataButton != null) navDataButton.onClick.AddListener(ShowHome);
+        if (navGroupsButton != null) navGroupsButton.onClick.AddListener(() => { if (groups.Count > 0) ShowGroupDetail(groups[0].groupId); else ShowHome(); });
+        if (navAssignmentsButton != null) navAssignmentsButton.onClick.AddListener(() => { if (assignmentBuilder != null && groups.Count > 0) assignmentBuilder.Show(groups[0].groupId, groups[0].name); });
+        if (navSettingsButton != null) navSettingsButton.onClick.AddListener(ShowHome);
+        if (navExitButton != null) navExitButton.onClick.AddListener(Logout);
+
         WireActionCards();
-        HideAllPanels();
+        UpdateSidebar();
+        ShowHome();
         LoadGroups();
     }
 
@@ -80,7 +114,9 @@ public class TeacherDashboardController : MonoBehaviour
     {
         var canvas = GetComponentInParent<Canvas>();
         if (canvas == null) return;
-        var cardsRow = canvas.transform.Find("ActionCardsRow");
+        var contentArea = canvas.transform.Find("ContentArea");
+        var homeView = contentArea != null ? contentArea.Find("HomeView") : null;
+        var cardsRow = homeView != null ? homeView.Find("ActionCardsRow") : canvas.transform.Find("ActionCardsRow");
         if (cardsRow == null) return;
 
         for (int i = 0; i < cardsRow.childCount; i++)
@@ -92,6 +128,57 @@ public class TeacherDashboardController : MonoBehaviour
             int idx = i;
             btn.onClick.AddListener(() => OnActionCardClicked(idx));
         }
+    }
+
+    private void ShowHome()
+    {
+        HideAllPanels();
+        if (homeView != null) homeView.SetActive(true);
+        HighlightNav(navHomeHighlight);
+    }
+
+    private void HighlightNav(Image active)
+    {
+        if (navHomeHighlight != null) navHomeHighlight.color = (active == navHomeHighlight) ? NavActive : NavInactive;
+        if (navDataHighlight != null) navDataHighlight.color = (active == navDataHighlight) ? NavActive : NavInactive;
+        if (navGroupsHighlight != null) navGroupsHighlight.color = (active == navGroupsHighlight) ? NavActive : NavInactive;
+        if (navAssignmentsHighlight != null) navAssignmentsHighlight.color = (active == navAssignmentsHighlight) ? NavActive : NavInactive;
+        if (navSettingsHighlight != null) navSettingsHighlight.color = (active == navSettingsHighlight) ? NavActive : NavInactive;
+    }
+
+    private void UpdateSidebar()
+    {
+        if (SessionManager.Instance == null || !SessionManager.Instance.IsLoggedIn) return;
+        if (sidebarNameText != null) sidebarNameText.text = SessionManager.Instance.DisplayName;
+        if (sidebarRoleText != null) sidebarRoleText.text = "Учитель";
+    }
+
+    private void WireSidebarFromScene()
+    {
+        var canvas = GetComponentInParent<Canvas>();
+        if (canvas == null) return;
+        var sidebar = canvas.transform.Find("LeftSidebar");
+        if (sidebar == null) return;
+
+        if (sidebarNameText == null) { var go = sidebar.Find("SidebarName"); if (go != null) sidebarNameText = go.GetComponent<TMP_Text>(); }
+        if (sidebarRoleText == null) { var go = sidebar.Find("SidebarRole"); if (go != null) sidebarRoleText = go.GetComponent<TMP_Text>(); }
+
+        if (navHomeButton == null) WireNavButton(sidebar, "NavHome", ref navHomeButton, ref navHomeHighlight);
+        if (navDataButton == null) WireNavButton(sidebar, "NavData", ref navDataButton, ref navDataHighlight);
+        if (navGroupsButton == null) WireNavButton(sidebar, "NavGroups", ref navGroupsButton, ref navGroupsHighlight);
+        if (navAssignmentsButton == null) WireNavButton(sidebar, "NavAssignments", ref navAssignmentsButton, ref navAssignmentsHighlight);
+        if (navSettingsButton == null) WireNavButton(sidebar, "NavSettings", ref navSettingsButton, ref navSettingsHighlight);
+        if (navExitButton == null) { var go = sidebar.Find("NavExit"); if (go != null) navExitButton = go.GetComponent<Button>(); }
+
+        if (homeView == null) { var ca = canvas.transform.Find("ContentArea"); if (ca != null) { var hv = ca.Find("HomeView"); if (hv != null) homeView = hv.gameObject; } }
+    }
+
+    private void WireNavButton(Transform sidebar, string name, ref Button btn, ref Image highlight)
+    {
+        var go = sidebar.Find(name);
+        if (go == null) return;
+        if (btn == null) btn = go.GetComponent<Button>();
+        if (highlight == null) highlight = go.GetComponent<Image>();
     }
 
     private void OnActionCardClicked(int cardIndex)
@@ -224,7 +311,10 @@ public class TeacherDashboardController : MonoBehaviour
         var group = groups.Find(g => g.groupId == groupId);
         if (group == null) return;
 
+        if (homeView != null) homeView.SetActive(false);
+        if (createGroupPanel != null) createGroupPanel.SetActive(false);
         if (groupDetailPanel != null) groupDetailPanel.SetActive(true);
+        HighlightNav(navGroupsHighlight);
         if (groupDetailName != null) groupDetailName.text = group.name;
         if (groupDetailCode != null) groupDetailCode.text = $"Код: {group.code}";
         if (groupDetailProgram != null) groupDetailProgram.text = group.IsSchool ? "Школьная программа" : "Студенческая программа";
@@ -321,14 +411,18 @@ public class TeacherDashboardController : MonoBehaviour
 
     private void ShowCreateGroupPanel()
     {
+        if (homeView != null) homeView.SetActive(false);
+        if (groupDetailPanel != null) groupDetailPanel.SetActive(false);
         if (createGroupPanel != null) createGroupPanel.SetActive(true);
         if (codeDisplayPanel != null) codeDisplayPanel.SetActive(false);
         if (groupNameInput != null) groupNameInput.text = "";
+        HighlightNav(navGroupsHighlight);
     }
 
     private void HideCreateGroupPanel()
     {
         if (createGroupPanel != null) createGroupPanel.SetActive(false);
+        ShowHome();
     }
 
     private async void OnCreateGroup()
@@ -356,6 +450,7 @@ public class TeacherDashboardController : MonoBehaviour
     private void ShowGroupsList()
     {
         if (groupDetailPanel != null) groupDetailPanel.SetActive(false);
+        ShowHome();
     }
 
     private void RefreshStudents()

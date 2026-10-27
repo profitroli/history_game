@@ -7156,6 +7156,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 798616544}
+  - component: {fileID: 798616546}
+  - component: {fileID: 798616545}
   m_Layer: 0
   m_Name: TitleArea
   m_TagString: Untagged
@@ -7179,11 +7181,49 @@ RectTransform:
   - {fileID: 945801024}
   m_Father: {fileID: 1442238381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.22, y: 0.84}
-  m_AnchorMax: {x: 0.98, y: 1}
+  m_AnchorMin: {x: 0, y: 0.8}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &798616545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798616543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.25, g: 0.18, b: 0.12, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &798616546
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798616543}
+  m_CullTransparentMesh: 1
 --- !u!1 &808550724
 GameObject:
   m_ObjectHideFlags: 0
@@ -8102,7 +8142,7 @@ RectTransform:
   m_Father: {fileID: 1442238381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.22, y: 0.04}
-  m_AnchorMax: {x: 0.98, y: 0.78}
+  m_AnchorMax: {x: 1, y: 0.78}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -8119,7 +8159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.98, b: 0.93, a: 0.92}
+  m_Color: {r: 0.95, g: 0.92, b: 0.87, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8318,8 +8358,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.35}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 2.5}
+  m_SizeDelta: {x: -40, y: -5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &945801025
 MonoBehaviour:
@@ -8353,7 +8393,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4290761177
-  m_fontColor: {r: 0.85, g: 0.82, b: 0.75, a: 1}
+  m_fontColor: {r: 0.85, g: 0.8, b: 0.65, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -13449,6 +13489,21 @@ MonoBehaviour:
   institutionInput: {fileID: 411499353}
   assignmentsButton: {fileID: 2083030292}
   assignmentBuilder: {fileID: 107006664}
+  sidebarNameText: {fileID: 0}
+  sidebarRoleText: {fileID: 0}
+  sidebarAvatarImage: {fileID: 0}
+  navHomeButton: {fileID: 0}
+  navDataButton: {fileID: 0}
+  navGroupsButton: {fileID: 0}
+  navAssignmentsButton: {fileID: 0}
+  navSettingsButton: {fileID: 0}
+  navExitButton: {fileID: 0}
+  navHomeHighlight: {fileID: 0}
+  navDataHighlight: {fileID: 0}
+  navGroupsHighlight: {fileID: 0}
+  navAssignmentsHighlight: {fileID: 0}
+  navSettingsHighlight: {fileID: 0}
+  homeView: {fileID: 0}
 --- !u!114 &1442238378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14445,8 +14500,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.35}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -2.5}
+  m_SizeDelta: {x: -40, y: -5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1610280254
 MonoBehaviour:
@@ -14478,7 +14533,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4292471794
-  m_fontColor: {r: 0.95, g: 0.92, b: 0.85, a: 1}
+  m_fontColor: {r: 0.95, g: 0.9, b: 0.75, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
