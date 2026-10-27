@@ -1,17 +1,19 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class MainMenuUIController : MonoBehaviour
 {
+    [Header("Виды контента (inline внутри ContentArea)")]
+    [SerializeField] private GameObject homeView;
+    [SerializeField] private GameObject profileView;
+    [SerializeField] private GameObject avatarView;
+    [SerializeField] private GameObject settingsView;
+    [SerializeField] private GameObject assignmentView;
+
     [Header("Кнопка профиля (аватар в углу)")]
     [SerializeField] private Button profileButton;
     [SerializeField] private Image profileButtonIcon;
-
-    [Header("Панели")]
-    [SerializeField] private GameObject profilePanel;
-    [SerializeField] private GameObject avatarPanel;
-    [SerializeField] private GameObject assignmentPanel;
 
     [Header("Внутри профиля — кнопки")]
     [SerializeField] private Button changeAvatarButton;
@@ -19,9 +21,10 @@ public class MainMenuUIController : MonoBehaviour
     [SerializeField] private Button closeProfileButton;
     [SerializeField] private Button logoutButton;
 
-    [Header("Закрытие панелей")]
+    [Header("Закрытие вложенных панелей")]
     [SerializeField] private Button avatarCloseButton;
     [SerializeField] private Button assignmentCloseButton;
+    [SerializeField] private Button settingsBackButton;
 
     [Header("Возврат учителя")]
     [SerializeField] private Button backToTeacherButton;
@@ -35,10 +38,17 @@ public class MainMenuUIController : MonoBehaviour
     [SerializeField] private TMP_Text sidebarProgressText;
     [SerializeField] private TMP_Text sidebarLevelText;
     [SerializeField] private TMP_Text sidebarAchievementsText;
+    [SerializeField] private Button navHomeButton;
     [SerializeField] private Button navProfileButton;
     [SerializeField] private Button navAchievementsButton;
     [SerializeField] private Button navSettingsButton;
     [SerializeField] private Button navExitButton;
+
+    [Header("Подсветка навигации")]
+    [SerializeField] private Image navHomeHighlight;
+    [SerializeField] private Image navProfileHighlight;
+    [SerializeField] private Image navAchievementsHighlight;
+    [SerializeField] private Image navSettingsHighlight;
 
     [Header("Профиль — инфо")]
     [SerializeField] private TMP_Text profileNameText;
@@ -47,15 +57,24 @@ public class MainMenuUIController : MonoBehaviour
     [SerializeField] private TMP_Text profileGroupText;
     [SerializeField] private Image profileAvatarImage;
 
+    [Header("Настройки — инфо")]
+    [SerializeField] private TMP_Text settingsUserInfoText;
+    [SerializeField] private Button settingsLogoutButton;
+
+    private static readonly Color NavActive = new Color(0.30f, 0.50f, 0.22f, 1f);
+    private static readonly Color NavInactive = new Color(0f, 0f, 0f, 0f);
+
     void Start()
     {
-        if (profileButton != null) profileButton.onClick.AddListener(OpenProfile);
-        if (changeAvatarButton != null) changeAvatarButton.onClick.AddListener(OpenAvatarFromProfile);
-        if (openAssignmentsButton != null) openAssignmentsButton.onClick.AddListener(OpenAssignmentsFromProfile);
-        if (closeProfileButton != null) closeProfileButton.onClick.AddListener(CloseAll);
+        if (profileButton != null) profileButton.onClick.AddListener(ShowProfile);
+        if (changeAvatarButton != null) changeAvatarButton.onClick.AddListener(ShowAvatar);
+        if (openAssignmentsButton != null) openAssignmentsButton.onClick.AddListener(ShowAssignments);
+        if (closeProfileButton != null) closeProfileButton.onClick.AddListener(ShowHome);
         if (logoutButton != null) logoutButton.onClick.AddListener(OnLogout);
-        if (avatarCloseButton != null) avatarCloseButton.onClick.AddListener(ReturnToProfile);
-        if (assignmentCloseButton != null) assignmentCloseButton.onClick.AddListener(ReturnToProfile);
+        if (avatarCloseButton != null) avatarCloseButton.onClick.AddListener(ShowProfile);
+        if (assignmentCloseButton != null) assignmentCloseButton.onClick.AddListener(ShowProfile);
+        if (settingsBackButton != null) settingsBackButton.onClick.AddListener(ShowHome);
+        if (settingsLogoutButton != null) settingsLogoutButton.onClick.AddListener(OnLogout);
 
         if (backToTeacherButton != null)
         {
@@ -64,61 +83,69 @@ public class MainMenuUIController : MonoBehaviour
             if (isTeacher) backToTeacherButton.onClick.AddListener(BackToTeacherDashboard);
         }
 
-        if (navProfileButton != null) navProfileButton.onClick.AddListener(OpenProfile);
-        if (navAchievementsButton != null) navAchievementsButton.onClick.AddListener(OpenProfile);
-        if (navSettingsButton != null) navSettingsButton.onClick.AddListener(() =>
-            UnityEngine.SceneManagement.SceneManager.LoadScene("SettingsScene"));
+        if (navHomeButton != null) navHomeButton.onClick.AddListener(ShowHome);
+        if (navProfileButton != null) navProfileButton.onClick.AddListener(ShowProfile);
+        if (navAchievementsButton != null) navAchievementsButton.onClick.AddListener(ShowProfile);
+        if (navSettingsButton != null) navSettingsButton.onClick.AddListener(ShowSettings);
         if (navExitButton != null) navExitButton.onClick.AddListener(OnLogout);
 
-        HideAll();
+        ShowHome();
         UpdateSidebar();
         UpdateProfileButtonIcon();
     }
 
-    public void OpenProfile()
+    private void ShowView(GameObject view)
     {
-        HideAll();
-        if (profilePanel != null)
-        {
-            profilePanel.SetActive(true);
-            UpdateProfileInfo();
-        }
+        if (homeView != null) homeView.SetActive(view == homeView);
+        if (profileView != null) profileView.SetActive(view == profileView);
+        if (avatarView != null) avatarView.SetActive(view == avatarView);
+        if (settingsView != null) settingsView.SetActive(view == settingsView);
+        if (assignmentView != null) assignmentView.SetActive(view == assignmentView);
     }
 
-    public void CloseAll()
+    private void HighlightNav(Image active)
     {
-        HideAll();
+        if (navHomeHighlight != null) navHomeHighlight.color = (active == navHomeHighlight) ? NavActive : NavInactive;
+        if (navProfileHighlight != null) navProfileHighlight.color = (active == navProfileHighlight) ? NavActive : NavInactive;
+        if (navAchievementsHighlight != null) navAchievementsHighlight.color = (active == navAchievementsHighlight) ? NavActive : NavInactive;
+        if (navSettingsHighlight != null) navSettingsHighlight.color = (active == navSettingsHighlight) ? NavActive : NavInactive;
     }
 
-    public void OpenAvatarFromProfile()
+    public void ShowHome()
     {
-        HideAll();
-        if (avatarPanel != null) avatarPanel.SetActive(true);
+        ShowView(homeView);
+        HighlightNav(navHomeHighlight);
     }
 
-    public void OpenAssignmentsFromProfile()
+    public void ShowProfile()
     {
-        HideAll();
-        if (assignmentPanel != null) assignmentPanel.SetActive(true);
+        ShowView(profileView);
+        HighlightNav(navProfileHighlight);
+        UpdateProfileInfo();
     }
 
-    public void ReturnToProfile()
+    public void ShowAvatar()
     {
-        HideAll();
-        if (profilePanel != null)
-        {
-            profilePanel.SetActive(true);
-            UpdateProfileInfo();
-        }
-        UpdateProfileButtonIcon();
+        ShowView(avatarView);
+        HighlightNav(navProfileHighlight);
     }
 
-    private void HideAll()
+    public void ShowSettings()
     {
-        if (profilePanel != null) profilePanel.SetActive(false);
-        if (avatarPanel != null) avatarPanel.SetActive(false);
-        if (assignmentPanel != null) assignmentPanel.SetActive(false);
+        ShowView(settingsView);
+        HighlightNav(navSettingsHighlight);
+        UpdateSettingsInfo();
     }
+
+    public void ShowAssignments()
+    {
+        ShowView(assignmentView);
+        HighlightNav(navProfileHighlight);
+    }
+
+    public void OpenProfile() => ShowProfile();
+    public void ReturnToProfile() => ShowProfile();
+    public void CloseAll() => ShowHome();
 
     private void UpdateProfileInfo()
     {
@@ -153,6 +180,20 @@ public class MainMenuUIController : MonoBehaviour
         UpdateProfileButtonIcon();
     }
 
+    private void UpdateSettingsInfo()
+    {
+        if (SessionManager.Instance == null || !SessionManager.Instance.IsLoggedIn) return;
+        if (settingsUserInfoText != null)
+        {
+            if (SessionManager.Instance.IsSelfStudy)
+                settingsUserInfoText.text = $"{SessionManager.Instance.DisplayName} (самостоятельно)";
+            else
+                settingsUserInfoText.text = $"{SessionManager.Instance.DisplayName} ({SessionManager.Instance.Email})";
+        }
+        if (settingsLogoutButton != null)
+            settingsLogoutButton.gameObject.SetActive(!SessionManager.Instance.IsSelfStudy);
+    }
+
     private void UpdateSidebar()
     {
         if (SessionManager.Instance == null || !SessionManager.Instance.IsLoggedIn) return;
@@ -180,7 +221,7 @@ public class MainMenuUIController : MonoBehaviour
         {
             sidebarProgressBar.value = total > 0 ? (float)completed / total : 0;
             if (sidebarProgressText != null)
-                sidebarProgressText.text = $"{completed} / {total}";
+                sidebarProgressText.text = $"Прогресс  {completed} / {total}";
         }
 
         if (sidebarLevelText != null)
