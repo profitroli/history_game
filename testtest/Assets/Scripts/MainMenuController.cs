@@ -319,9 +319,10 @@ public class MainMenuController : MonoBehaviour
         if (canvasObj == null) canvasObj = FindObjectOfType<Canvas>();
         if (canvasObj == null) return;
 
-        var sectionsPanel = canvasObj.transform.Find("SectionsPanel");
-        if (sectionsPanel == null) return;
-        var cardsRow = sectionsPanel.Find("CardsRow");
+        var contentArea = canvasObj.transform.Find("ContentArea");
+        if (contentArea == null) contentArea = canvasObj.transform.Find("SectionsPanel");
+        if (contentArea == null) return;
+        var cardsRow = contentArea.Find("CardsRow");
         if (cardsRow == null) return;
 
         System.Action[] actions = { LoadLecturesScene, LoadMiniGamesScene, LoadPreparationScene, OpenProfilePanel };
