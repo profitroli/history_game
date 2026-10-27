@@ -26,6 +26,20 @@ public class MainMenuUIController : MonoBehaviour
     [Header("Возврат учителя")]
     [SerializeField] private Button backToTeacherButton;
 
+    [Header("Сайдбар")]
+    [SerializeField] private TMP_Text welcomeText;
+    [SerializeField] private TMP_Text sidebarNameText;
+    [SerializeField] private TMP_Text sidebarRoleText;
+    [SerializeField] private Image sidebarAvatarImage;
+    [SerializeField] private Slider sidebarProgressBar;
+    [SerializeField] private TMP_Text sidebarProgressText;
+    [SerializeField] private TMP_Text sidebarLevelText;
+    [SerializeField] private TMP_Text sidebarAchievementsText;
+    [SerializeField] private Button navProfileButton;
+    [SerializeField] private Button navAchievementsButton;
+    [SerializeField] private Button navSettingsButton;
+    [SerializeField] private Button navExitButton;
+
     [Header("Профиль — инфо")]
     [SerializeField] private TMP_Text profileNameText;
     [SerializeField] private TMP_Text profileEmailText;
@@ -50,7 +64,14 @@ public class MainMenuUIController : MonoBehaviour
             if (isTeacher) backToTeacherButton.onClick.AddListener(BackToTeacherDashboard);
         }
 
+        if (navProfileButton != null) navProfileButton.onClick.AddListener(OpenProfile);
+        if (navAchievementsButton != null) navAchievementsButton.onClick.AddListener(OpenProfile);
+        if (navSettingsButton != null) navSettingsButton.onClick.AddListener(() =>
+            UnityEngine.SceneManagement.SceneManager.LoadScene("SettingsScene"));
+        if (navExitButton != null) navExitButton.onClick.AddListener(OnLogout);
+
         HideAll();
+        UpdateSidebar();
         UpdateProfileButtonIcon();
     }
 
@@ -132,6 +153,49 @@ public class MainMenuUIController : MonoBehaviour
         UpdateProfileButtonIcon();
     }
 
+    private void UpdateSidebar()
+    {
+        if (SessionManager.Instance == null || !SessionManager.Instance.IsLoggedIn) return;
+        string displayName = SessionManager.Instance.DisplayName;
+
+        if (welcomeText != null)
+            welcomeText.text = $"Добро пожаловать, {displayName}!";
+        if (sidebarNameText != null)
+            sidebarNameText.text = displayName;
+        if (sidebarRoleText != null)
+        {
+            switch (SessionManager.Instance.Role)
+            {
+                case UserRole.SchoolStudent: sidebarRoleText.text = "Школьник"; break;
+                case UserRole.Teacher: sidebarRoleText.text = "Преподаватель"; break;
+                default: sidebarRoleText.text = "Студент"; break;
+            }
+        }
+
+        var progress = ProgressService.Instance != null ? ProgressService.Instance.GetProgress() : null;
+        int completed = progress != null ? progress.LecturesCompleted + progress.GamesCompleted + progress.TestsCompleted : 0;
+        int total = 62;
+
+        if (sidebarProgressBar != null)
+        {
+            sidebarProgressBar.value = total > 0 ? (float)completed / total : 0;
+            if (sidebarProgressText != null)
+                sidebarProgressText.text = $"{completed} / {total}";
+        }
+
+        if (sidebarLevelText != null)
+        {
+            int level = Mathf.Max(1, completed / 5 + 1);
+            sidebarLevelText.text = $"Уровень {level}";
+        }
+
+        if (sidebarAchievementsText != null)
+        {
+            int achCount = progress != null ? progress.GamesCompleted : 0;
+            sidebarAchievementsText.text = $"{achCount} / 20";
+        }
+    }
+
     private void UpdateProfileButtonIcon()
     {
         var sprite = AvatarService.GetSelectedSprite();
@@ -139,6 +203,7 @@ public class MainMenuUIController : MonoBehaviour
         {
             if (profileButtonIcon != null) { profileButtonIcon.sprite = sprite; profileButtonIcon.color = Color.white; }
             if (profileAvatarImage != null) { profileAvatarImage.sprite = sprite; profileAvatarImage.color = Color.white; }
+            if (sidebarAvatarImage != null) { sidebarAvatarImage.sprite = sprite; sidebarAvatarImage.color = Color.white; }
         }
     }
 
