@@ -60,6 +60,7 @@ public class MainMenuUIController : MonoBehaviour
     [Header("Настройки — инфо")]
     [SerializeField] private TMP_Text settingsUserInfoText;
     [SerializeField] private Button settingsLogoutButton;
+    [SerializeField] private Slider audioSlider;
 
     private static readonly Color NavActive = new Color(0.30f, 0.50f, 0.22f, 1f);
     private static readonly Color NavInactive = new Color(0f, 0f, 0f, 0f);
@@ -89,9 +90,39 @@ public class MainMenuUIController : MonoBehaviour
         if (navSettingsButton != null) navSettingsButton.onClick.AddListener(ShowSettings);
         if (navExitButton != null) navExitButton.onClick.AddListener(OnLogout);
 
+        WireAudioSlider();
         ShowHome();
         UpdateSidebar();
         UpdateProfileButtonIcon();
+    }
+
+    private void WireAudioSlider()
+    {
+        if (audioSlider == null)
+        {
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                var all = canvas.GetComponentsInChildren<Slider>(true);
+                foreach (var s in all)
+                {
+                    if (s.name.Contains("Audio") || s.name.Contains("Volume"))
+                    { audioSlider = s; break; }
+                }
+            }
+        }
+        if (audioSlider != null)
+        {
+            if (AudioManager.Instance != null)
+                audioSlider.value = AudioManager.Instance.musicVolume;
+            audioSlider.onValueChanged.AddListener(OnAudioSliderChanged);
+        }
+    }
+
+    private void OnAudioSliderChanged(float value)
+    {
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.SetVolume(value);
     }
 
     private void ShowView(GameObject view)
@@ -135,6 +166,8 @@ public class MainMenuUIController : MonoBehaviour
         ShowView(settingsView);
         HighlightNav(navSettingsHighlight);
         UpdateSettingsInfo();
+        if (audioSlider != null && AudioManager.Instance != null)
+            audioSlider.value = AudioManager.Instance.musicVolume;
     }
 
     public void ShowAssignments()
@@ -251,6 +284,8 @@ public class MainMenuUIController : MonoBehaviour
     private async void LoadGroupName()
     {
         if (profileGroupText == null) return;
+        if (SessionManager.Instance.IsSelfStudy) { profileGroupText.text = "Самостоятельное изучение"; return; }
+        if (FirebaseManager.Instance == null || FirebaseManager.Instance.Service == null) { profileGroupText.text = "Группа не определена"; return; }
         string gid = SessionManager.Instance.GroupId;
         var doc = await FirebaseManager.Instance.Service.GetDocument("groups", gid);
         if (doc != null && doc.ContainsKey("name"))

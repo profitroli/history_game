@@ -112,14 +112,22 @@ public class AvatarController : MonoBehaviour
             var lockGO = new GameObject("Lock");
             lockGO.transform.SetParent(imgGO.transform, false);
             var lockRT = lockGO.AddComponent<RectTransform>();
-            lockRT.anchorMin = Vector2.zero;
-            lockRT.anchorMax = Vector2.one;
+            lockRT.anchorMin = new Vector2(0.25f, 0.25f);
+            lockRT.anchorMax = new Vector2(0.75f, 0.75f);
             lockRT.offsetMin = lockRT.offsetMax = Vector2.zero;
-            var lockTMP = lockGO.AddComponent<TextMeshProUGUI>();
-            lockTMP.text = "\U0001f512";
-            lockTMP.fontSize = 32;
-            lockTMP.alignment = TextAlignmentOptions.Center;
-            lockTMP.color = new Color(1, 1, 1, 0.7f);
+            var lockImg = lockGO.AddComponent<Image>();
+            var lockSprite = Resources.Load<Sprite>("UI/lock_icon");
+            if (lockSprite != null)
+            {
+                lockImg.sprite = lockSprite;
+                lockImg.preserveAspect = true;
+                lockImg.color = new Color(1, 1, 1, 0.85f);
+            }
+            else
+            {
+                lockImg.color = new Color(0.4f, 0.4f, 0.45f, 0.8f);
+            }
+            lockImg.raycastTarget = false;
         }
 
         var nameGO = new GameObject("Name");
