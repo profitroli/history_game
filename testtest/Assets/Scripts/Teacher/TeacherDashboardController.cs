@@ -380,33 +380,42 @@ public class TeacherDashboardController : MonoBehaviour
     {
         var row = new GameObject("StudentRow");
         var rt = row.AddComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(700, 40);
+        rt.sizeDelta = new Vector2(0, 50);
+        var rowLE = row.AddComponent<LayoutElement>();
+        rowLE.minHeight = 50;
+        rowLE.preferredHeight = 50;
         var layout = row.AddComponent<HorizontalLayoutGroup>();
         layout.spacing = 15;
         layout.padding = new RectOffset(10, 10, 5, 5);
+        layout.childForceExpandHeight = true;
+        layout.childControlHeight = true;
+        layout.childControlWidth = false;
         var bg = row.AddComponent<Image>();
-        bg.color = new Color(0.95f, 0.95f, 0.95f, 1f);
+        bg.color = new Color(0.92f, 0.90f, 0.85f, 1f);
 
-        AddTextToRow(row, student.displayName, 200);
-        AddTextToRow(row, $"Лекции: {progress.LecturesCompleted}", 120);
-        AddTextToRow(row, $"Игры: {progress.GamesCompleted}", 120);
-        AddTextToRow(row, $"Тесты: {progress.TestsCompleted}", 120);
-        AddTextToRow(row, $"Ср. балл: {progress.AverageTestScore:F0}%", 120);
+        AddTextToRow(row, student.displayName, 200, true);
+        AddTextToRow(row, $"Лекции: {progress.LecturesCompleted}/14", 130);
+        AddTextToRow(row, $"Игры: {progress.GamesCompleted}/35", 120);
+        AddTextToRow(row, $"Тесты: {progress.TestsCompleted}/14", 120);
+        AddTextToRow(row, $"Ср. балл: {progress.AverageTestScore:F0}%", 140);
 
         return row;
     }
 
-    private void AddTextToRow(GameObject parent, string value, float width)
+    private void AddTextToRow(GameObject parent, string value, float width, bool bold = false)
     {
         var obj = new GameObject("Col");
         obj.transform.SetParent(parent.transform, false);
         var text = obj.AddComponent<TextMeshProUGUI>();
         text.text = value;
-        text.fontSize = 14;
+        text.fontSize = 18;
+        text.color = new Color(0.24f, 0.16f, 0.1f, 1f);
+        if (bold) text.fontStyle = FontStyles.Bold;
         var rt = obj.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(width, 30);
+        rt.sizeDelta = new Vector2(width, 40);
         var le = obj.AddComponent<LayoutElement>();
         le.preferredWidth = width;
+        le.preferredHeight = 40;
     }
 
     private void ShowCreateGroupPanel()
