@@ -192,19 +192,21 @@ public class TeacherDashboardController : MonoBehaviour
                     ToastManager.Show("Сначала создайте группу");
                 break;
             case 1:
-                if (assignmentBuilder != null)
-                {
-                    if (groups.Count > 0)
-                        assignmentBuilder.Show(groups[0].groupId, groups[0].name);
-                    else
-                        ToastManager.Show("Сначала создайте группу");
-                }
+                if (groups.Count > 0)
+                    ShowGroupDetail(groups[0].groupId);
                 else
-                {
-                    ToastManager.Show("Конструктор заданий не найден");
-                }
+                    ShowCreateGroupPanel();
                 break;
-            case 2: ShowCreateGroupPanel(); break;
+            case 2:
+                if (assignmentBuilder == null)
+                    assignmentBuilder = FindAnyObjectByType<AssignmentBuilderController>(FindObjectsInactive.Include);
+                if (assignmentBuilder != null && groups.Count > 0)
+                    assignmentBuilder.Show(groups[0].groupId, groups[0].name);
+                else if (groups.Count == 0)
+                    ToastManager.Show("Сначала создайте группу");
+                else
+                    ShowCreateGroupPanel();
+                break;
             case 3: PreviewAsStudent(); break;
         }
     }
@@ -224,7 +226,8 @@ public class TeacherDashboardController : MonoBehaviour
         var hv = contentArea != null ? contentArea.Find("HomeView") : null;
         if (hv == null) return;
 
-        var infoRow = hv.Find("InfoRow");
+        var infoRow = hv.Find("InfoCardsRow");
+        if (infoRow == null) infoRow = hv.Find("InfoRow");
         if (infoRow == null) return;
 
         var groupsCard = infoRow.Find("GroupsCard");

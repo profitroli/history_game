@@ -112,8 +112,7 @@ public class AssignmentBuilderController : MonoBehaviour
             t.text = "Нет заданий. Нажмите «Создать»";
             t.fontSize = 16;
             t.alignment = TextAlignmentOptions.Center;
-            var rt = emptyGO.AddComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(500, 40);
+            emptyGO.GetComponent<RectTransform>().sizeDelta = new Vector2(500, 40);
             return;
         }
 
