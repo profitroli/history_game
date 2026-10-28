@@ -34,6 +34,7 @@ public class LoginController : MonoBehaviour
     [SerializeField] private TMP_InputField selfStudyNameInput;
     [SerializeField] private Button schoolStudentButton;
     [SerializeField] private Button universityStudentButton;
+    [SerializeField] private Button teacherSelfStudyButton;
     [SerializeField] private Button backFromRoleButton;
 
     [Header("Доп. кнопки")]
@@ -50,6 +51,7 @@ public class LoginController : MonoBehaviour
         if (backToLoginButton != null) backToLoginButton.onClick.AddListener(ShowLoginPanel);
         if (schoolStudentButton != null) schoolStudentButton.onClick.AddListener(() => OnSelfStudyRole(UserRole.SchoolStudent));
         if (universityStudentButton != null) universityStudentButton.onClick.AddListener(() => OnSelfStudyRole(UserRole.UniversityStudent));
+        if (teacherSelfStudyButton != null) teacherSelfStudyButton.onClick.AddListener(() => OnSelfStudyRole(UserRole.Teacher));
         if (backFromRoleButton != null) backFromRoleButton.onClick.AddListener(ShowLoginPanel);
         if (forgotPasswordButton != null) forgotPasswordButton.onClick.AddListener(OnForgotPassword);
 
