@@ -8,6 +8,7 @@ public static class AssignmentService
     private static List<AssignmentData> localAssignments = new List<AssignmentData>();
 
     private static bool IsFirebaseAvailable =>
+        SessionManager.Instance != null && !SessionManager.Instance.IsSelfStudy &&
         FirebaseManager.Instance != null && FirebaseManager.Instance.Service != null;
 
     public static async Task<AssignmentData> CreateAssignment(string name, string groupId, List<QuestionData> questions)

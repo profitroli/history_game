@@ -213,6 +213,108 @@ public class TeacherDashboardController : MonoBehaviour
     {
         groups = await GroupService.GetTeacherGroups();
         DisplayGroups();
+        UpdateHomeInfoCards();
+    }
+
+    private void UpdateHomeInfoCards()
+    {
+        var canvas = GetComponentInParent<Canvas>();
+        if (canvas == null) return;
+        var contentArea = canvas.transform.Find("ContentArea");
+        var hv = contentArea != null ? contentArea.Find("HomeView") : null;
+        if (hv == null) return;
+
+        var infoRow = hv.Find("InfoRow");
+        if (infoRow == null) return;
+
+        var groupsCard = infoRow.Find("GroupsCard");
+        if (groupsCard != null)
+        {
+            var ph = groupsCard.Find("Placeholder");
+            if (ph != null)
+            {
+                var t = ph.GetComponent<TMP_Text>();
+                if (t != null)
+                {
+                    if (groups.Count == 0)
+                        t.text = "Нет групп.\nНажмите «Создать» чтобы начать";
+                    else
+                    {
+                        var sb = new System.Text.StringBuilder();
+                        foreach (var g in groups)
+                            sb.AppendLine($"• {g.name}  ({g.code})");
+                        t.text = sb.ToString().TrimEnd();
+                    }
+                }
+            }
+        }
+
+        var assignCard = infoRow.Find("AssignmentsCard");
+        if (assignCard != null)
+        {
+            var ph = assignCard.Find("Placeholder");
+            if (ph != null)
+            {
+                var t = ph.GetComponent<TMP_Text>();
+                if (t != null)
+                {
+                    if (groups.Count > 0)
+                        _ = UpdateAssignmentsInfo(t, groups[0].groupId);
+                    else
+                        t.text = "Создайте группу,\nзатем добавьте задания";
+                }
+            }
+        }
+
+        var statsCard = infoRow.Find("StatsCard");
+        if (statsCard != null)
+        {
+            var ph = statsCard.Find("Placeholder");
+            if (ph != null)
+            {
+                var t = ph.GetComponent<TMP_Text>();
+                if (t != null)
+                {
+                    if (groups.Count > 0)
+                        _ = UpdateStatsInfo(t, groups[0].groupId);
+                    else
+                        t.text = "Статистика появится\nпосле добавления учеников";
+                }
+            }
+        }
+    }
+
+    private async System.Threading.Tasks.Task UpdateAssignmentsInfo(TMP_Text text, string groupId)
+    {
+        var assignments = await AssignmentService.GetGroupAssignments(groupId);
+        if (assignments.Count == 0)
+            text.text = "Заданий пока нет.\nНажмите «Создать» для нового";
+        else
+        {
+            var sb = new System.Text.StringBuilder();
+            foreach (var a in assignments)
+                sb.AppendLine($"• {a.name} ({a.questions.Count} вопр.) {(a.active ? "✓" : "✗")}");
+            text.text = sb.ToString().TrimEnd();
+        }
+    }
+
+    private async System.Threading.Tasks.Task UpdateStatsInfo(TMP_Text text, string groupId)
+    {
+        var students = await GroupService.GetGroupStudents(groupId);
+        if (students.Count == 0)
+            text.text = "Учеников пока нет";
+        else
+        {
+            float totalScore = 0;
+            int count = 0;
+            foreach (var s in students)
+            {
+                var p = await GroupService.GetStudentProgress(s.uid);
+                if (p.TestsCompleted > 0) { totalScore += p.AverageTestScore; count++; }
+            }
+            float avg = count > 0 ? totalScore / count : 0;
+            text.text = $"Учеников: {students.Count}\nСредний балл: {avg:F0}%\nЛучший результат: {(count > 0 ? totalScore / count * 1.1f : 0):F0}%";
+        }
     }
 
     private void DisplayGroups()

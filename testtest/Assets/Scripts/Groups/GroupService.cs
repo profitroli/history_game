@@ -11,6 +11,7 @@ public static class GroupService
     private static bool seeded;
 
     private static bool IsFirebaseAvailable =>
+        SessionManager.Instance != null && !SessionManager.Instance.IsSelfStudy &&
         FirebaseManager.Instance != null && FirebaseManager.Instance.Service != null;
 
     private static void SeedIfNeeded()
