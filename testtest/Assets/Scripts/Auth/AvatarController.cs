@@ -127,7 +127,7 @@ public class AvatarController : MonoBehaviour
         nameGO.AddComponent<RectTransform>();
         var nameTMP = nameGO.AddComponent<TextMeshProUGUI>();
         nameTMP.text = AvatarConfig.Names[index];
-        nameTMP.fontSize = 13;
+        nameTMP.fontSize = 25;
         nameTMP.alignment = TextAlignmentOptions.Center;
         nameTMP.color = Color.white;
         nameGO.AddComponent<LayoutElement>().preferredHeight = 20;
@@ -136,8 +136,8 @@ public class AvatarController : MonoBehaviour
         descGO.transform.SetParent(card.transform, false);
         descGO.AddComponent<RectTransform>();
         var descTMP = descGO.AddComponent<TextMeshProUGUI>();
-        descTMP.text = isUnlocked ? (isSelected ? "★ Выбран" : "Доступен") : AvatarConfig.Descriptions[index];
-        descTMP.fontSize = 11;
+        descTMP.text = isUnlocked ? (isSelected ? "Выбран" : "Доступен") : AvatarConfig.Descriptions[index];
+        descTMP.fontSize = 20;
         descTMP.alignment = TextAlignmentOptions.Center;
         descTMP.color = isUnlocked ? new Color(0.8f, 1f, 0.8f) : new Color(0.7f, 0.7f, 0.75f);
         descGO.AddComponent<LayoutElement>().preferredHeight = 18;

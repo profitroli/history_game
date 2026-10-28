@@ -1,0 +1,4 @@
+repository "History game/Путь в историю Беларуси@7972518405120@cloud"
+  path "/"
+    br "/main"
+    co "/main"
