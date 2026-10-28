@@ -80,6 +80,7 @@ public class TeacherDashboardController : MonoBehaviour
     private bool showArchived;
     private GameObject assignmentBuilderPanel;
     private GameObject groupsScrollView;
+    private MiniGameAssignController miniGameAssigner;
 
     void Start()
     {
@@ -110,8 +111,8 @@ public class TeacherDashboardController : MonoBehaviour
         if (navDataButton != null) navDataButton.onClick.AddListener(() => OnNavShowGroup(0));
         if (navGroupsButton != null) navGroupsButton.onClick.AddListener(ShowGroupsSelection);
         if (navAssignmentsButton != null) navAssignmentsButton.onClick.AddListener(ShowAssignments);
-        if (navMyTasksButton != null) navMyTasksButton.onClick.AddListener(ShowAssignments);
-        if (navGradingButton != null) navGradingButton.onClick.AddListener(() => OnNavShowGroup(0));
+        if (navMyTasksButton != null) navMyTasksButton.onClick.AddListener(ShowMiniGameAssign);
+        if (navGradingButton != null) navGradingButton.onClick.AddListener(ShowMiniGameAssign);
         if (navStatsButton != null) navStatsButton.onClick.AddListener(() => OnNavShowGroup(0));
         if (navSettingsButton != null) navSettingsButton.onClick.AddListener(ShowHome);
         if (navExitButton != null) navExitButton.onClick.AddListener(Logout);
@@ -270,6 +271,11 @@ public class TeacherDashboardController : MonoBehaviour
         if (SessionManager.Instance == null || !SessionManager.Instance.IsLoggedIn) return;
         if (sidebarNameText != null) sidebarNameText.text = SessionManager.Instance.DisplayName;
         if (sidebarRoleText != null) sidebarRoleText.text = "Учитель";
+        if (sidebarAvatarImage != null)
+        {
+            var sprite = Resources.Load<Sprite>("UI/teacher_avatar");
+            if (sprite != null) { sidebarAvatarImage.sprite = sprite; sidebarAvatarImage.color = Color.white; }
+        }
     }
 
     private void WireSidebarFromScene()
@@ -281,6 +287,7 @@ public class TeacherDashboardController : MonoBehaviour
 
         if (sidebarNameText == null) { var go = sidebar.Find("SidebarName"); if (go != null) sidebarNameText = go.GetComponent<TMP_Text>(); }
         if (sidebarRoleText == null) { var go = sidebar.Find("SidebarRole"); if (go != null) sidebarRoleText = go.GetComponent<TMP_Text>(); }
+        if (sidebarAvatarImage == null) { var go = sidebar.Find("SidebarAvatar"); if (go != null) sidebarAvatarImage = go.GetComponent<Image>(); }
 
         if (navHomeButton == null) WireNavButton(sidebar, "NavHome", ref navHomeButton, ref navHomeHighlight);
         if (navDataButton == null) WireNavButton(sidebar, "NavData", ref navDataButton, ref navDataHighlight);
@@ -428,7 +435,7 @@ public class TeacherDashboardController : MonoBehaviour
             emptyObj.transform.SetParent(groupsListContent, false);
             var text = emptyObj.AddComponent<TextMeshProUGUI>();
             text.text = "Нет созданных групп. Нажмите «Создать группу»";
-            text.fontSize = 18;
+            text.fontSize = 25;
             text.alignment = TextAlignmentOptions.Center;
             emptyObj.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 60);
             return;
@@ -465,7 +472,7 @@ public class TeacherDashboardController : MonoBehaviour
         nameObj.transform.SetParent(card.transform, false);
         var nameText = nameObj.AddComponent<TextMeshProUGUI>();
         nameText.text = $"{group.name}\nКод: {group.code} | {(group.IsSchool ? "Школьная" : "Студенческая")}";
-        nameText.fontSize = 16;
+        nameText.fontSize = 22;
 
         var btnObj = new GameObject("OpenBtn");
         btnObj.transform.SetParent(card.transform, false);
@@ -475,7 +482,7 @@ public class TeacherDashboardController : MonoBehaviour
         var btnText = new GameObject("Text").AddComponent<TextMeshProUGUI>();
         btnText.transform.SetParent(btnObj.transform, false);
         btnText.text = "Открыть";
-        btnText.fontSize = 14;
+        btnText.fontSize = 20;
         btnText.alignment = TextAlignmentOptions.Center;
 
         return card;
@@ -523,7 +530,7 @@ public class TeacherDashboardController : MonoBehaviour
             emptyObj.transform.SetParent(studentsListContent, false);
             var text = emptyObj.AddComponent<TextMeshProUGUI>();
             text.text = "Пока нет учеников в этой группе";
-            text.fontSize = 16;
+            text.fontSize = 22;
             emptyObj.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 40);
             return;
         }
@@ -574,7 +581,7 @@ public class TeacherDashboardController : MonoBehaviour
         obj.transform.SetParent(parent.transform, false);
         var text = obj.AddComponent<TextMeshProUGUI>();
         text.text = value;
-        text.fontSize = 18;
+        text.fontSize = 22;
         text.color = new Color(0.24f, 0.16f, 0.1f, 1f);
         if (bold) text.fontStyle = FontStyles.Bold;
         obj.GetComponent<RectTransform>().sizeDelta = new Vector2(width, 40);
@@ -619,6 +626,27 @@ public class TeacherDashboardController : MonoBehaviour
         }
     }
 
+    private void ShowMiniGameAssign()
+    {
+        if (groups.Count == 0) { ToastManager.Show("Сначала создайте группу"); return; }
+        string gId = !string.IsNullOrEmpty(selectedGroupId) ? selectedGroupId : groups[0].groupId;
+        var g = groups.Find(x => x.groupId == gId);
+        string gName = g != null ? g.name : "Группа";
+
+        if (miniGameAssigner == null)
+        {
+            var canvas = GetComponentInParent<Canvas>();
+            var ca = canvas != null ? canvas.transform.Find("ContentArea") : null;
+            if (ca == null) return;
+            var mgGO = new GameObject("MiniGameAssignPanel");
+            mgGO.transform.SetParent(ca, false);
+            miniGameAssigner = mgGO.AddComponent<MiniGameAssignController>();
+        }
+        HideAllPanels();
+        miniGameAssigner.Show(gId, gName, null);
+        HighlightNav(navMyTasksHighlight);
+    }
+
     private void ShowGroupsList()
     {
         if (groupDetailPanel != null) groupDetailPanel.SetActive(false);
@@ -639,6 +667,7 @@ public class TeacherDashboardController : MonoBehaviour
         if (codeDisplayPanel != null) codeDisplayPanel.SetActive(false);
         if (assignmentBuilderPanel != null) assignmentBuilderPanel.SetActive(false);
         if (groupsScrollView != null) groupsScrollView.SetActive(false);
+        if (miniGameAssigner != null) miniGameAssigner.Hide();
     }
 
     private void PreviewAsStudent()

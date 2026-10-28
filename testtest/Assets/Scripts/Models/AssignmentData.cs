@@ -18,15 +18,22 @@ public class AssignmentData
         var questionsMap = new Dictionary<string, object>();
         for (int i = 0; i < questions.Count; i++)
         {
-            questionsMap[i.ToString()] = new Dictionary<string, object>
+            var qDict = new Dictionary<string, object>
             {
+                { "type", questions[i].questionType },
                 { "text", questions[i].text },
-                { "optA", questions[i].optionA },
-                { "optB", questions[i].optionB },
-                { "optC", questions[i].optionC },
-                { "optD", questions[i].optionD },
                 { "correct", questions[i].correctIndex }
             };
+            if (questions[i].questionType == QuestionData.TypeMultipleChoice)
+            {
+                qDict["optA"] = questions[i].optionA;
+                qDict["optB"] = questions[i].optionB;
+                qDict["optC"] = questions[i].optionC;
+                qDict["optD"] = questions[i].optionD;
+            }
+            if (!string.IsNullOrEmpty(questions[i].correctTextAnswer))
+                qDict["correctText"] = questions[i].correctTextAnswer;
+            questionsMap[i.ToString()] = qDict;
         }
 
         return new Dictionary<string, object>
@@ -66,12 +73,14 @@ public class AssignmentData
                 {
                     a.questions.Add(new QuestionData
                     {
+                        questionType = (int)Lng(q, "type"),
                         text = Str(q, "text"),
                         optionA = Str(q, "optA"),
                         optionB = Str(q, "optB"),
                         optionC = Str(q, "optC"),
                         optionD = Str(q, "optD"),
-                        correctIndex = (int)Lng(q, "correct")
+                        correctIndex = (int)Lng(q, "correct"),
+                        correctTextAnswer = Str(q, "correctText")
                     });
                 }
             }
