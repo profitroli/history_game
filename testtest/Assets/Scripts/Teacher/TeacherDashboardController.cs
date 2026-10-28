@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -51,6 +51,9 @@ public class TeacherDashboardController : MonoBehaviour
     [SerializeField] private Button navDataButton;
     [SerializeField] private Button navGroupsButton;
     [SerializeField] private Button navAssignmentsButton;
+    [SerializeField] private Button navMyTasksButton;
+    [SerializeField] private Button navGradingButton;
+    [SerializeField] private Button navStatsButton;
     [SerializeField] private Button navSettingsButton;
     [SerializeField] private Button navExitButton;
 
@@ -59,6 +62,9 @@ public class TeacherDashboardController : MonoBehaviour
     [SerializeField] private Image navDataHighlight;
     [SerializeField] private Image navGroupsHighlight;
     [SerializeField] private Image navAssignmentsHighlight;
+    [SerializeField] private Image navMyTasksHighlight;
+    [SerializeField] private Image navGradingHighlight;
+    [SerializeField] private Image navStatsHighlight;
     [SerializeField] private Image navSettingsHighlight;
 
     [Header("Виды контента")]
@@ -72,6 +78,7 @@ public class TeacherDashboardController : MonoBehaviour
     private List<ProgressData> currentProgressList = new List<ProgressData>();
     private string selectedGroupId;
     private bool showArchived;
+    private GameObject assignmentBuilderPanel;
 
     void Start()
     {
@@ -96,18 +103,48 @@ public class TeacherDashboardController : MonoBehaviour
         if (showArchivedToggle != null) showArchivedToggle.onValueChanged.AddListener(OnShowArchivedChanged);
 
         WireSidebarFromScene();
+        WireAssignmentBuilder();
 
         if (navHomeButton != null) navHomeButton.onClick.AddListener(ShowHome);
-        if (navDataButton != null) navDataButton.onClick.AddListener(ShowHome);
-        if (navGroupsButton != null) navGroupsButton.onClick.AddListener(() => { if (groups.Count > 0) ShowGroupDetail(groups[0].groupId); else ShowHome(); });
-        if (navAssignmentsButton != null) navAssignmentsButton.onClick.AddListener(() => { if (assignmentBuilder != null && groups.Count > 0) assignmentBuilder.Show(groups[0].groupId, groups[0].name); });
+        if (navDataButton != null) navDataButton.onClick.AddListener(() => OnNavShowGroup(0));
+        if (navGroupsButton != null) navGroupsButton.onClick.AddListener(ShowGroupsSelection);
+        if (navAssignmentsButton != null) navAssignmentsButton.onClick.AddListener(ShowAssignments);
+        if (navMyTasksButton != null) navMyTasksButton.onClick.AddListener(ShowAssignments);
+        if (navGradingButton != null) navGradingButton.onClick.AddListener(() => OnNavShowGroup(0));
+        if (navStatsButton != null) navStatsButton.onClick.AddListener(() => OnNavShowGroup(0));
         if (navSettingsButton != null) navSettingsButton.onClick.AddListener(ShowHome);
         if (navExitButton != null) navExitButton.onClick.AddListener(Logout);
 
         WireActionCards();
+        WireInfoCardButtons();
         UpdateSidebar();
         ShowHome();
         LoadGroups();
+    }
+
+    private void WireAssignmentBuilder()
+    {
+        if (assignmentBuilder != null)
+        {
+            assignmentBuilderPanel = assignmentBuilder.gameObject;
+            return;
+        }
+        assignmentBuilder = FindAnyObjectByType<AssignmentBuilderController>(FindObjectsInactive.Include);
+        if (assignmentBuilder != null)
+        {
+            assignmentBuilderPanel = assignmentBuilder.gameObject;
+            return;
+        }
+        var canvas = GetComponentInParent<Canvas>();
+        if (canvas == null) return;
+        var ca = canvas.transform.Find("ContentArea");
+        if (ca == null) return;
+        var abp = ca.Find("AssignmentBuilderPanel");
+        if (abp != null)
+        {
+            assignmentBuilder = abp.GetComponent<AssignmentBuilderController>();
+            assignmentBuilderPanel = abp.gameObject;
+        }
     }
 
     private void WireActionCards()
@@ -115,8 +152,8 @@ public class TeacherDashboardController : MonoBehaviour
         var canvas = GetComponentInParent<Canvas>();
         if (canvas == null) return;
         var contentArea = canvas.transform.Find("ContentArea");
-        var homeView = contentArea != null ? contentArea.Find("HomeView") : null;
-        var cardsRow = homeView != null ? homeView.Find("ActionCardsRow") : canvas.transform.Find("ActionCardsRow");
+        var hv = contentArea != null ? contentArea.Find("HomeView") : null;
+        var cardsRow = hv != null ? hv.Find("ActionCardsRow") : null;
         if (cardsRow == null) return;
 
         for (int i = 0; i < cardsRow.childCount; i++)
@@ -124,10 +161,39 @@ public class TeacherDashboardController : MonoBehaviour
             var card = cardsRow.GetChild(i);
             var btn = card.GetComponentInChildren<Button>();
             if (btn == null) continue;
-
             int idx = i;
             btn.onClick.AddListener(() => OnActionCardClicked(idx));
         }
+    }
+
+    private void WireInfoCardButtons()
+    {
+        var canvas = GetComponentInParent<Canvas>();
+        if (canvas == null) return;
+        var ca = canvas.transform.Find("ContentArea");
+        var hv = ca != null ? ca.Find("HomeView") : null;
+        if (hv == null) return;
+
+        var infoRow = hv.Find("InfoCardsRow");
+        if (infoRow == null) infoRow = hv.Find("InfoRow");
+        if (infoRow == null) return;
+
+        var groupsBtn = FindActionBtn(infoRow, "GroupsCard");
+        if (groupsBtn != null) groupsBtn.onClick.AddListener(ShowGroupsSelection);
+
+        var assignBtn = FindActionBtn(infoRow, "AssignmentsCard");
+        if (assignBtn != null) assignBtn.onClick.AddListener(ShowAssignments);
+
+        var statsBtn = FindActionBtn(infoRow, "StatsCard");
+        if (statsBtn != null) statsBtn.onClick.AddListener(() => OnNavShowGroup(0));
+    }
+
+    private Button FindActionBtn(Transform parent, string cardName)
+    {
+        var card = parent.Find(cardName);
+        if (card == null) return null;
+        var ab = card.Find("ActionBtn");
+        return ab != null ? ab.GetComponent<Button>() : null;
     }
 
     private void ShowHome()
@@ -137,13 +203,58 @@ public class TeacherDashboardController : MonoBehaviour
         HighlightNav(navHomeHighlight);
     }
 
+    private void ShowGroupsSelection()
+    {
+        if (groups.Count == 0)
+        {
+            ShowCreateGroupPanel();
+            return;
+        }
+        if (groups.Count == 1)
+        {
+            ShowGroupDetail(groups[0].groupId);
+            return;
+        }
+        HideAllPanels();
+        if (homeView != null) homeView.SetActive(true);
+        HighlightNav(navGroupsHighlight);
+        ToastManager.Show($"Групп: {groups.Count}. Нажмите «Открыть» на карточке.");
+    }
+
+    private void ShowAssignments()
+    {
+        if (assignmentBuilder == null) WireAssignmentBuilder();
+        if (assignmentBuilder != null && groups.Count > 0)
+        {
+            HideAllPanels();
+            string gId = !string.IsNullOrEmpty(selectedGroupId) ? selectedGroupId : groups[0].groupId;
+            var g = groups.Find(x => x.groupId == gId);
+            assignmentBuilder.Show(gId, g != null ? g.name : "Группа");
+            HighlightNav(navAssignmentsHighlight);
+        }
+        else if (groups.Count == 0)
+            ToastManager.Show("Сначала создайте группу");
+        else
+            ToastManager.Show("Конструктор заданий не найден");
+    }
+
+    private void OnNavShowGroup(int fallbackIndex)
+    {
+        if (groups.Count > 0)
+        {
+            string gId = !string.IsNullOrEmpty(selectedGroupId) ? selectedGroupId : groups[0].groupId;
+            ShowGroupDetail(gId);
+        }
+        else
+            ToastManager.Show("Сначала создайте группу");
+    }
+
     private void HighlightNav(Image active)
     {
-        if (navHomeHighlight != null) navHomeHighlight.color = (active == navHomeHighlight) ? NavActive : NavInactive;
-        if (navDataHighlight != null) navDataHighlight.color = (active == navDataHighlight) ? NavActive : NavInactive;
-        if (navGroupsHighlight != null) navGroupsHighlight.color = (active == navGroupsHighlight) ? NavActive : NavInactive;
-        if (navAssignmentsHighlight != null) navAssignmentsHighlight.color = (active == navAssignmentsHighlight) ? NavActive : NavInactive;
-        if (navSettingsHighlight != null) navSettingsHighlight.color = (active == navSettingsHighlight) ? NavActive : NavInactive;
+        Image[] all = { navHomeHighlight, navDataHighlight, navGroupsHighlight, navAssignmentsHighlight,
+                        navMyTasksHighlight, navGradingHighlight, navStatsHighlight, navSettingsHighlight };
+        foreach (var h in all)
+            if (h != null) h.color = (h == active) ? NavActive : NavInactive;
     }
 
     private void UpdateSidebar()
@@ -167,6 +278,9 @@ public class TeacherDashboardController : MonoBehaviour
         if (navDataButton == null) WireNavButton(sidebar, "NavData", ref navDataButton, ref navDataHighlight);
         if (navGroupsButton == null) WireNavButton(sidebar, "NavGroups", ref navGroupsButton, ref navGroupsHighlight);
         if (navAssignmentsButton == null) WireNavButton(sidebar, "NavAssignments", ref navAssignmentsButton, ref navAssignmentsHighlight);
+        if (navMyTasksButton == null) WireNavButton(sidebar, "NavMyTasks", ref navMyTasksButton, ref navMyTasksHighlight);
+        if (navGradingButton == null) WireNavButton(sidebar, "NavGrading", ref navGradingButton, ref navGradingHighlight);
+        if (navStatsButton == null) WireNavButton(sidebar, "NavStats", ref navStatsButton, ref navStatsHighlight);
         if (navSettingsButton == null) WireNavButton(sidebar, "NavSettings", ref navSettingsButton, ref navSettingsHighlight);
         if (navExitButton == null) { var go = sidebar.Find("NavExit"); if (go != null) navExitButton = go.GetComponent<Button>(); }
 
@@ -192,22 +306,14 @@ public class TeacherDashboardController : MonoBehaviour
                     ToastManager.Show("Сначала создайте группу");
                 break;
             case 1:
-                if (groups.Count > 0)
-                    ShowGroupDetail(groups[0].groupId);
-                else
-                    ShowCreateGroupPanel();
+                ShowGroupsSelection();
                 break;
             case 2:
-                if (assignmentBuilder == null)
-                    assignmentBuilder = FindAnyObjectByType<AssignmentBuilderController>(FindObjectsInactive.Include);
-                if (assignmentBuilder != null && groups.Count > 0)
-                    assignmentBuilder.Show(groups[0].groupId, groups[0].name);
-                else if (groups.Count == 0)
-                    ToastManager.Show("Сначала создайте группу");
-                else
-                    ShowCreateGroupPanel();
+                ShowAssignments();
                 break;
-            case 3: PreviewAsStudent(); break;
+            case 3:
+                PreviewAsStudent();
+                break;
         }
     }
 
@@ -230,61 +336,44 @@ public class TeacherDashboardController : MonoBehaviour
         if (infoRow == null) infoRow = hv.Find("InfoRow");
         if (infoRow == null) return;
 
-        var groupsCard = infoRow.Find("GroupsCard");
-        if (groupsCard != null)
-        {
-            var ph = groupsCard.Find("Placeholder");
-            if (ph != null)
-            {
-                var t = ph.GetComponent<TMP_Text>();
-                if (t != null)
-                {
-                    if (groups.Count == 0)
-                        t.text = "Нет групп.\nНажмите «Создать» чтобы начать";
-                    else
-                    {
-                        var sb = new System.Text.StringBuilder();
-                        foreach (var g in groups)
-                            sb.AppendLine($"• {g.name}  ({g.code})");
-                        t.text = sb.ToString().TrimEnd();
-                    }
-                }
-            }
-        }
+        UpdateCardText(infoRow, "GroupsCard", groups.Count == 0
+            ? "Нет групп.\nНажмите «Создать» чтобы начать"
+            : BuildGroupsList());
 
-        var assignCard = infoRow.Find("AssignmentsCard");
-        if (assignCard != null)
+        if (groups.Count > 0)
         {
-            var ph = assignCard.Find("Placeholder");
-            if (ph != null)
-            {
-                var t = ph.GetComponent<TMP_Text>();
-                if (t != null)
-                {
-                    if (groups.Count > 0)
-                        _ = UpdateAssignmentsInfo(t, groups[0].groupId);
-                    else
-                        t.text = "Создайте группу,\nзатем добавьте задания";
-                }
-            }
+            var aph = GetCardPlaceholder(infoRow, "AssignmentsCard");
+            if (aph != null) _ = UpdateAssignmentsInfo(aph, groups[0].groupId);
+            var sph = GetCardPlaceholder(infoRow, "StatsCard");
+            if (sph != null) _ = UpdateStatsInfo(sph, groups[0].groupId);
         }
+        else
+        {
+            UpdateCardText(infoRow, "AssignmentsCard", "Создайте группу,\nзатем добавьте задания");
+            UpdateCardText(infoRow, "StatsCard", "Статистика появится\nпосле добавления учеников");
+        }
+    }
 
-        var statsCard = infoRow.Find("StatsCard");
-        if (statsCard != null)
-        {
-            var ph = statsCard.Find("Placeholder");
-            if (ph != null)
-            {
-                var t = ph.GetComponent<TMP_Text>();
-                if (t != null)
-                {
-                    if (groups.Count > 0)
-                        _ = UpdateStatsInfo(t, groups[0].groupId);
-                    else
-                        t.text = "Статистика появится\nпосле добавления учеников";
-                }
-            }
-        }
+    private string BuildGroupsList()
+    {
+        var sb = new System.Text.StringBuilder();
+        foreach (var g in groups)
+            sb.AppendLine($"• {g.name}  ({g.code})");
+        return sb.ToString().TrimEnd();
+    }
+
+    private void UpdateCardText(Transform infoRow, string cardName, string text)
+    {
+        var t = GetCardPlaceholder(infoRow, cardName);
+        if (t != null) t.text = text;
+    }
+
+    private TMP_Text GetCardPlaceholder(Transform infoRow, string cardName)
+    {
+        var card = infoRow.Find(cardName);
+        if (card == null) return null;
+        var ph = card.Find("Placeholder");
+        return ph != null ? ph.GetComponent<TMP_Text>() : null;
     }
 
     private async System.Threading.Tasks.Task UpdateAssignmentsInfo(TMP_Text text, string groupId)
@@ -296,7 +385,7 @@ public class TeacherDashboardController : MonoBehaviour
         {
             var sb = new System.Text.StringBuilder();
             foreach (var a in assignments)
-                sb.AppendLine($"• {a.name} ({a.questions.Count} вопр.) {(a.active ? "✓" : "✗")}");
+                sb.AppendLine($"• {a.name} ({a.questions.Count} вопр.)");
             text.text = sb.ToString().TrimEnd();
         }
     }
@@ -304,28 +393,21 @@ public class TeacherDashboardController : MonoBehaviour
     private async System.Threading.Tasks.Task UpdateStatsInfo(TMP_Text text, string groupId)
     {
         var students = await GroupService.GetGroupStudents(groupId);
-        if (students.Count == 0)
-            text.text = "Учеников пока нет";
-        else
+        if (students.Count == 0) { text.text = "Учеников пока нет"; return; }
+        float totalScore = 0; int count = 0;
+        foreach (var s in students)
         {
-            float totalScore = 0;
-            int count = 0;
-            foreach (var s in students)
-            {
-                var p = await GroupService.GetStudentProgress(s.uid);
-                if (p.TestsCompleted > 0) { totalScore += p.AverageTestScore; count++; }
-            }
-            float avg = count > 0 ? totalScore / count : 0;
-            text.text = $"Учеников: {students.Count}\nСредний балл: {avg:F0}%\nЛучший результат: {(count > 0 ? totalScore / count * 1.1f : 0):F0}%";
+            var p = await GroupService.GetStudentProgress(s.uid);
+            if (p.TestsCompleted > 0) { totalScore += p.AverageTestScore; count++; }
         }
+        float avg = count > 0 ? totalScore / count : 0;
+        text.text = $"Учеников: {students.Count}\nСредний балл: {avg:F0}%";
     }
 
     private void DisplayGroups()
     {
         if (groupsListContent == null) return;
-
-        foreach (Transform child in groupsListContent)
-            Destroy(child.gameObject);
+        foreach (Transform child in groupsListContent) Destroy(child.gameObject);
 
         if (groups.Count == 0)
         {
@@ -335,37 +417,17 @@ public class TeacherDashboardController : MonoBehaviour
             text.text = "Нет созданных групп. Нажмите «Создать группу»";
             text.fontSize = 18;
             text.alignment = TextAlignmentOptions.Center;
-            var rt = emptyObj.GetComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(600, 60);
+            emptyObj.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 60);
             return;
         }
 
         var visibleGroups = groups.FindAll(g => showArchived || !g.archived);
-        if (visibleGroups.Count == 0)
-        {
-            var emptyObj2 = new GameObject("EmptyMsg");
-            emptyObj2.transform.SetParent(groupsListContent, false);
-            var t = emptyObj2.AddComponent<TextMeshProUGUI>();
-            t.text = showArchived ? "Нет архивных групп" : "Нет активных групп. Нажмите «Создать группу»";
-            t.fontSize = 18;
-            t.alignment = TextAlignmentOptions.Center;
-            var r = emptyObj2.GetComponent<RectTransform>();
-            r.sizeDelta = new Vector2(600, 60);
-            return;
-        }
-
         foreach (var group in visibleGroups)
         {
-            GameObject card;
-            if (groupCardPrefab != null)
-            {
-                card = Instantiate(groupCardPrefab, groupsListContent);
-            }
-            else
-            {
-                card = CreateDefaultGroupCard(group);
-                card.transform.SetParent(groupsListContent, false);
-            }
+            GameObject card = groupCardPrefab != null
+                ? Instantiate(groupCardPrefab, groupsListContent)
+                : CreateDefaultGroupCard(group);
+            if (groupCardPrefab == null) card.transform.SetParent(groupsListContent, false);
 
             var texts = card.GetComponentsInChildren<TMP_Text>();
             if (texts.Length > 0) texts[0].text = group.name;
@@ -380,13 +442,11 @@ public class TeacherDashboardController : MonoBehaviour
     private GameObject CreateDefaultGroupCard(GroupData group)
     {
         var card = new GameObject("GroupCard");
-        var rt = card.AddComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(600, 80);
+        card.AddComponent<RectTransform>().sizeDelta = new Vector2(600, 80);
         var layout = card.AddComponent<HorizontalLayoutGroup>();
         layout.padding = new RectOffset(10, 10, 5, 5);
         layout.spacing = 10;
-        var bg = card.AddComponent<Image>();
-        bg.color = new Color(0.9f, 0.9f, 0.95f, 1f);
+        card.AddComponent<Image>().color = new Color(0.9f, 0.9f, 0.95f, 1f);
 
         var nameObj = new GameObject("Name");
         nameObj.transform.SetParent(card.transform, false);
@@ -396,11 +456,9 @@ public class TeacherDashboardController : MonoBehaviour
 
         var btnObj = new GameObject("OpenBtn");
         btnObj.transform.SetParent(card.transform, false);
-        var btnImg = btnObj.AddComponent<Image>();
-        btnImg.color = new Color(0.3f, 0.5f, 0.8f, 1f);
-        var btnComp = btnObj.AddComponent<Button>();
-        var btnRt = btnObj.GetComponent<RectTransform>();
-        btnRt.sizeDelta = new Vector2(100, 40);
+        btnObj.AddComponent<Image>().color = new Color(0.3f, 0.5f, 0.8f, 1f);
+        btnObj.AddComponent<Button>();
+        btnObj.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 40);
         var btnText = new GameObject("Text").AddComponent<TextMeshProUGUI>();
         btnText.transform.SetParent(btnObj.transform, false);
         btnText.text = "Открыть";
@@ -416,8 +474,7 @@ public class TeacherDashboardController : MonoBehaviour
         var group = groups.Find(g => g.groupId == groupId);
         if (group == null) return;
 
-        if (homeView != null) homeView.SetActive(false);
-        if (createGroupPanel != null) createGroupPanel.SetActive(false);
+        HideAllPanels();
         if (groupDetailPanel != null) groupDetailPanel.SetActive(true);
         HighlightNav(navGroupsHighlight);
         if (groupDetailName != null) groupDetailName.text = group.name;
@@ -441,9 +498,7 @@ public class TeacherDashboardController : MonoBehaviour
     private async System.Threading.Tasks.Task LoadStudents(string groupId)
     {
         if (studentsListContent == null) return;
-
-        foreach (Transform child in studentsListContent)
-            Destroy(child.gameObject);
+        foreach (Transform child in studentsListContent) Destroy(child.gameObject);
 
         var students = await GroupService.GetGroupStudents(groupId);
         currentStudents = students;
@@ -456,8 +511,7 @@ public class TeacherDashboardController : MonoBehaviour
             var text = emptyObj.AddComponent<TextMeshProUGUI>();
             text.text = "Пока нет учеников в этой группе";
             text.fontSize = 16;
-            var rt = emptyObj.GetComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(600, 40);
+            emptyObj.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 40);
             return;
         }
 
@@ -465,27 +519,22 @@ public class TeacherDashboardController : MonoBehaviour
         {
             var progress = await GroupService.GetStudentProgress(student.uid);
             currentProgressList.Add(progress);
-
-            GameObject row;
+            GameObject row = studentRowPrefab != null
+                ? Instantiate(studentRowPrefab, studentsListContent)
+                : CreateDefaultStudentRow(student, progress);
             if (studentRowPrefab != null)
             {
-                row = Instantiate(studentRowPrefab, studentsListContent);
                 var rowComp = row.GetComponent<StudentProgressRow>();
                 if (rowComp != null) rowComp.SetData(student, progress);
             }
-            else
-            {
-                row = CreateDefaultStudentRow(student, progress);
-                row.transform.SetParent(studentsListContent, false);
-            }
+            else row.transform.SetParent(studentsListContent, false);
         }
     }
 
     private GameObject CreateDefaultStudentRow(UserData student, ProgressData progress)
     {
         var row = new GameObject("StudentRow");
-        var rt = row.AddComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(0, 50);
+        row.AddComponent<RectTransform>().sizeDelta = new Vector2(0, 50);
         var rowLE = row.AddComponent<LayoutElement>();
         rowLE.minHeight = 50;
         rowLE.preferredHeight = 50;
@@ -495,8 +544,7 @@ public class TeacherDashboardController : MonoBehaviour
         layout.childForceExpandHeight = true;
         layout.childControlHeight = true;
         layout.childControlWidth = false;
-        var bg = row.AddComponent<Image>();
-        bg.color = new Color(0.92f, 0.90f, 0.85f, 1f);
+        row.AddComponent<Image>().color = new Color(0.92f, 0.90f, 0.85f, 1f);
 
         AddTextToRow(row, student.displayName, 200, true);
         AddTextToRow(row, $"Лекции: {progress.LecturesCompleted}/14", 130);
@@ -516,8 +564,7 @@ public class TeacherDashboardController : MonoBehaviour
         text.fontSize = 18;
         text.color = new Color(0.24f, 0.16f, 0.1f, 1f);
         if (bold) text.fontStyle = FontStyles.Bold;
-        var rt = obj.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(width, 40);
+        obj.GetComponent<RectTransform>().sizeDelta = new Vector2(width, 40);
         var le = obj.AddComponent<LayoutElement>();
         le.preferredWidth = width;
         le.preferredHeight = 40;
@@ -525,8 +572,7 @@ public class TeacherDashboardController : MonoBehaviour
 
     private void ShowCreateGroupPanel()
     {
-        if (homeView != null) homeView.SetActive(false);
-        if (groupDetailPanel != null) groupDetailPanel.SetActive(false);
+        HideAllPanels();
         if (createGroupPanel != null) createGroupPanel.SetActive(true);
         if (codeDisplayPanel != null) codeDisplayPanel.SetActive(false);
         if (groupNameInput != null) groupNameInput.text = "";
@@ -544,19 +590,18 @@ public class TeacherDashboardController : MonoBehaviour
         string name = groupNameInput?.text?.Trim();
         if (string.IsNullOrEmpty(name))
         {
-            Debug.LogWarning("Введите название группы");
+            ToastManager.Show("Введите название группы");
             return;
         }
-
         string program = (schoolProgramToggle != null && schoolProgramToggle.isOn) ? "school" : "university";
         string institution = institutionInput?.text?.Trim() ?? "";
         var group = await GroupService.CreateGroup(name, program, institution);
-
         if (group != null)
         {
             string inviteLink = GroupService.GetInviteLink(group.code);
             if (createdCodeText != null) createdCodeText.text = $"Код группы: {group.code}\nСсылка: {inviteLink}";
             if (codeDisplayPanel != null) codeDisplayPanel.SetActive(true);
+            ToastManager.Show($"Группа «{name}» создана! Код: {group.code}");
             LoadGroups();
         }
     }
@@ -575,9 +620,11 @@ public class TeacherDashboardController : MonoBehaviour
 
     private void HideAllPanels()
     {
+        if (homeView != null) homeView.SetActive(false);
         if (createGroupPanel != null) createGroupPanel.SetActive(false);
         if (groupDetailPanel != null) groupDetailPanel.SetActive(false);
         if (codeDisplayPanel != null) codeDisplayPanel.SetActive(false);
+        if (assignmentBuilderPanel != null) assignmentBuilderPanel.SetActive(false);
     }
 
     private void PreviewAsStudent()
@@ -598,21 +645,31 @@ public class TeacherDashboardController : MonoBehaviour
         DisplayGroups();
     }
 
-    private async void ArchiveSelectedGroup()
+    private void ArchiveSelectedGroup()
     {
         if (string.IsNullOrEmpty(selectedGroupId)) return;
-
         var group = groups.Find(g => g.groupId == selectedGroupId);
         if (group == null) return;
 
+        if (SessionManager.Instance != null && SessionManager.Instance.IsSelfStudy)
+        {
+            group.archived = !group.archived;
+            if (groupDetailPanel != null) groupDetailPanel.SetActive(false);
+            ShowHome();
+            LoadGroups();
+            return;
+        }
+        _ = ArchiveGroupAsync(group);
+    }
+
+    private async System.Threading.Tasks.Task ArchiveGroupAsync(GroupData group)
+    {
         bool newState = !group.archived;
         var data = new Dictionary<string, object> { { "archived", newState } };
         bool ok = await FirebaseManager.Instance.Service.UpdateDocument("groups", selectedGroupId, data);
-
         if (ok)
         {
             group.archived = newState;
-            Debug.Log($"[Teacher] Группа {group.name} {(newState ? "архивирована" : "восстановлена")}");
             if (groupDetailPanel != null) groupDetailPanel.SetActive(false);
             DisplayGroups();
         }
@@ -622,25 +679,20 @@ public class TeacherDashboardController : MonoBehaviour
     {
         if (currentStudents.Count == 0)
         {
-            Debug.LogWarning("[Teacher] Нет данных для экспорта");
+            ToastManager.Show("Нет данных для экспорта");
             return;
         }
-
         var group = groups.Find(g => g.groupId == selectedGroupId);
         string groupName = group?.name ?? "group";
-
         var sb = new System.Text.StringBuilder();
         sb.AppendLine("Имя,Лекции,Игры,Тесты,Средний балл %");
-
         for (int i = 0; i < currentStudents.Count; i++)
         {
             var student = currentStudents[i];
             var progress = i < currentProgressList.Count ? currentProgressList[i] : new ProgressData();
             sb.AppendLine($"\"{student.displayName}\",{progress.LecturesCompleted},{progress.GamesCompleted},{progress.TestsCompleted},{progress.AverageTestScore:F0}");
         }
-
         string csv = sb.ToString();
-
 #if UNITY_WEBGL && !UNITY_EDITOR
         DownloadCsvWebGL(csv, $"{groupName}_report.csv");
 #else
@@ -648,7 +700,7 @@ public class TeacherDashboardController : MonoBehaviour
             System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
             $"{groupName}_report.csv");
         System.IO.File.WriteAllText(path, csv, System.Text.Encoding.UTF8);
-        Debug.Log($"[Teacher] Отчёт сохранён: {path}");
+        ToastManager.Show($"Отчёт сохранён на рабочий стол");
 #endif
     }
 
