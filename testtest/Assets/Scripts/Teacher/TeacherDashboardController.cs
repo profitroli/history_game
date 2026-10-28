@@ -79,6 +79,7 @@ public class TeacherDashboardController : MonoBehaviour
     private string selectedGroupId;
     private bool showArchived;
     private GameObject assignmentBuilderPanel;
+    private GameObject groupsScrollView;
 
     void Start()
     {
@@ -216,9 +217,16 @@ public class TeacherDashboardController : MonoBehaviour
             return;
         }
         HideAllPanels();
-        if (homeView != null) homeView.SetActive(true);
+        if (groupsScrollView != null)
+        {
+            groupsScrollView.SetActive(true);
+            DisplayGroups();
+        }
+        else
+        {
+            if (homeView != null) homeView.SetActive(true);
+        }
         HighlightNav(navGroupsHighlight);
-        ToastManager.Show($"Групп: {groups.Count}. Нажмите «Открыть» на карточке.");
     }
 
     private void ShowAssignments()
@@ -285,6 +293,8 @@ public class TeacherDashboardController : MonoBehaviour
         if (navExitButton == null) { var go = sidebar.Find("NavExit"); if (go != null) navExitButton = go.GetComponent<Button>(); }
 
         if (homeView == null) { var ca = canvas.transform.Find("ContentArea"); if (ca != null) { var hv = ca.Find("HomeView"); if (hv != null) homeView = hv.gameObject; } }
+
+        if (groupsScrollView == null) { var gsv = canvas.transform.Find("GroupsScrollView"); if (gsv != null) groupsScrollView = gsv.gameObject; }
     }
 
     private void WireNavButton(Transform sidebar, string name, ref Button btn, ref Image highlight)
@@ -365,7 +375,10 @@ public class TeacherDashboardController : MonoBehaviour
     private void UpdateCardText(Transform infoRow, string cardName, string text)
     {
         var t = GetCardPlaceholder(infoRow, cardName);
-        if (t != null) t.text = text;
+        if (t == null) return;
+        t.text = text;
+        t.fontSize = 24;
+        t.color = new Color(0.15f, 0.12f, 0.08f, 1f);
     }
 
     private TMP_Text GetCardPlaceholder(Transform infoRow, string cardName)
@@ -625,6 +638,7 @@ public class TeacherDashboardController : MonoBehaviour
         if (groupDetailPanel != null) groupDetailPanel.SetActive(false);
         if (codeDisplayPanel != null) codeDisplayPanel.SetActive(false);
         if (assignmentBuilderPanel != null) assignmentBuilderPanel.SetActive(false);
+        if (groupsScrollView != null) groupsScrollView.SetActive(false);
     }
 
     private void PreviewAsStudent()
