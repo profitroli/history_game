@@ -1,54 +1,60 @@
-# NOW — История белорусской государственности
+﻿# NOW — История белорусской государственности
 Updated: 2026-10-28 · single writer: главная сессия
 
 ## Goal
-Визуальная доработка TeacherDashboard до эталонного качества LoginScene/MainMenu.
+Визуальная доработка TeacherDashboard до эталонного качества LoginScene/MainMenu + teacher workflow.
 
 ## Verified state
-- TeacherDashboard font sizes fixed: 36 text elements updated (verified via eval, Play Mode screenshot)
-  - ActionCard Title: 16→22, Desc: 11→15, Btn: 16→18
-  - Info titles: 14→20, placeholders: 12→15, action btns: 12→16
-  - Sidebar nav: 13→19, SidebarName: 18→22, SidebarRole: 13→16
-- TitleArea created: dark brown bg (0.25,0.18,0.12), title "ПАНЕЛЬ УЧИТЕЛЯ" 42pt, subtitle 18pt
-- Action card colors fixed to match mockup: beige, yellow, blue, purple
-- Button texts fixed: "Открыть", "Перейти", "Создать", "Проверить"
-- ContentArea: anchors (0.24,0.02)-(0.98,0.78), opaque cream bg
-- LeftSidebar widened: 0.2→0.22 (matches MainMenu)
-- Play Mode verified: scene=TeacherDashboardScene, user="Алексей Петров", role=Teacher, isTeacher=True
-- CreateGroupPanel shows correctly with fields and buttons
-- FirebaseManager=NULL in SelfStudy mode — group creation/assignment requires Firebase backend
+- Font sizes matched to MainMenu (38 elements): Title 50, CardTitle 30, CardDesc 19, CardBtn 25, NavLabels 25, SidebarName 25, SidebarRole 20, InfoTitles 25
+- 4 card icons extracted from mockup and added: icon_mydata (green person), icon_mygroups (orange group), icon_assignments (blue clipboard), icon_grading (purple checkmark)
+- Card layout adjusted: Icon top (0.58-0.97), Title (0.38-0.58), Desc (0.18-0.38), Btn (0.02-0.16)
+- GroupService SelfStudy fallback: 2 seed groups (7A, 8B), 5 mock students with progress
+- AssignmentService SelfStudy fallback: local storage for assignments
+- StudentsScrollView mask fixed: Mask+transparent Image → RectMask2D
+- Students visible: Мария Иванова (10/14, 25/35, 8/14, 77%), Андрей Сидоров, Ольга Петровна
+- Play Mode verified: scene=TeacherDashboardScene, user=Алексей Петров, IsTeacher=True
+- Commit: 5bcd21a
 
 ## Unverified / assumed
-- LoginScene and MainMenu not modified (per user instruction)
 - WebGL build not tested
-- Full teacher workflow (create group → add student → check student view) requires Firebase
+- Full assignment creation flow (editor panel) not visually tested
+- PreviewAsStudent (Card_3) loads MainMenu — not tested this session
 
 ## Modified files (current cycle)
-- testtest/Assets/Scenes/TeacherDashboardScene.unity — fonts, layout, TitleArea, card colors
+- testtest/Assets/Scenes/TeacherDashboardScene.unity — fonts, layout, icons, card colors, TitleArea, mask fix
+- testtest/Assets/Scripts/Groups/GroupService.cs — SelfStudy fallback + seed data
+- testtest/Assets/Scripts/Services/AssignmentService.cs — SelfStudy fallback
+- testtest/Assets/Scripts/Teacher/TeacherDashboardController.cs — student row rendering
+- testtest/Assets/Sprites/Teacher/ — 4 icon PNGs + .meta
 
 ## Open decisions
-- Firebase needed for full teacher workflow testing
-- Иконки для action cards (PNG assets from designer)
-- NavMyTasks, NavGrading, NavStats — need dedicated panels
+- Action card click mapping (Card_0→ShowGroupDetail, Card_2→CreateGroup) seems reversed
+- NavMyTasks, NavGrading, NavStats — need dedicated views
+- Teacher avatar — still placeholder
+- Notification bell — per mockup
 
 ## Rejected approaches
-- Editing scene YAML directly — used eval scripts instead (more reliable, auto-saves)
-- Using pipeline screenshot for UI — doesn't render Canvas, used ScreenCapture.CaptureScreenshot in Play Mode
+- Editing scene YAML directly — used eval scripts (more reliable)
+- Using pipeline screenshot for UI — doesn't render Canvas
+- Extracting icons from card area of mockup — too imprecise, used separate icons row instead
+- Using UI Mask on ScrollView — transparent Image masked everything, replaced with RectMask2D
 
 ## Next 3 actions
-1. Commit changes to TeacherDashboardScene
-2. Test student view (MainMenu) to verify no regressions
-3. Implement remaining teacher nav panels when ready
+1. Visual polish: info section buttons font sizes, action card shadow/rounded corners
+2. Assignment editor panel visual test in Play Mode
+3. Student preview (PreviewAsStudent) workflow verification
 
 ## Evidence
 | claim | command | result | date |
 |---|---|---|---|
-| Font fix 36 elements | eval fix_fonts_batch.cs | Fixed 36 texts | 2026-10-28 |
-| Card colors fixed | eval fix_card_colors.cs | 4 cards recolored | 2026-10-28 |
-| TitleArea created | eval add_title_area.cs | TitleArea with text+subtitle | 2026-10-28 |
-| Play Mode verified | eval screenshot_final.cs | scene=TeacherDashboard isTeacher=True | 2026-10-28 |
-| Firebase null | eval check_logs.cs | FirebaseManager: NULL | 2026-10-28 |
+| Fonts 38 elements | eval fix_fonts_to_mainmenu.cs | Fixed 38 texts to MainMenu sizes | 2026-10-28 |
+| Icons extracted | Python PIL crop from mockup | 4 icons 256x256 saved | 2026-10-28 |
+| Icons on cards | eval add_card_icons.cs | 4 cards with sprites | 2026-10-28 |
+| Groups loaded | eval check_groups.cs | 2 groups: 7A, 8B | 2026-10-28 |
+| Students visible | eval+screenshot | 3 students with progress data | 2026-10-28 |
+| Mask bug | Viewport Image alpha=0 | Replaced Mask→RectMask2D | 2026-10-28 |
 
 ## Do not assume
 - Что Firebase работает в SelfStudy режиме
-- Что скриншоты Pipeline рендерят UI (нужен Play Mode + ScreenCapture)
+- Что Pipeline screenshot рендерит UI
+- Что UI Mask с прозрачным Image показывает содержимое
